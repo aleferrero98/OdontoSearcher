@@ -1,0 +1,4 @@
+http://mundogeek.net/archivos/2008/11/24/interfaces-graficas-de-usuario-en-python/
+https://www.youtube.com/watch?v=hTUJC8HsC2I  ->  pildoras informaticas
+https://docs.python.org/3/library/tk.html  ->  documentacion oficial
+https://docs.python.org/es/3/library/tk.html  ->  doc oficial en español
