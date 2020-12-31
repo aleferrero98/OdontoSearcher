@@ -6,6 +6,10 @@ from menu_inicial import *
 #app.raiz.mainloop()
 #app.aparecer()
 
-if __name__ == '__main__':
+def main():
     # create the application
     app = Menu()
+    return 0
+
+if __name__ == '__main__':
+    main()

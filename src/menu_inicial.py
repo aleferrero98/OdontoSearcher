@@ -1,4 +1,8 @@
 import tkinter as tk
+import sys
+
+#falta:
+    # agregar icono de app arriba
 
 class Menu:
     def __init__(self):
@@ -30,19 +34,41 @@ class Menu:
         #canvas_botones.pack(side="bottom")
         #canvas_botones.place(x=0, y=298)
         #canvas_botones.create_image((0,100), image=img_fondo, anchor="sw")
-        canvas_fondo.create_text(100, 350, text="Paciente", font=("waltograph", 30))
 
-        btn_lupa = tk.Button(text = "lupa", anchor = 'w')
-        btn_crear = tk.Button(text = "Crear", anchor = 'w')
-        lupa_window = canvas_fondo.create_window(300, 350, window=btn_lupa)
-        crear_window = canvas_fondo.create_window(350, 350, window=btn_crear)
+        # Widgets menu
+        # cuadros
+        cuadro_nombre = tk.Entry(canvas_fondo, width=20)
+        cuadro_nombre.config(fg="black", justify="left", font=("arial", 12))
+        #imagenes
+        img_lupa = tk.PhotoImage(file="../imagenes/lupa2.png")
+        img_borrar = tk.PhotoImage(file="../imagenes/borrar.png", width=50, height=50)
+        img_salir = tk.PhotoImage(file="../imagenes/exit.png")
+        # botones
+        btn_lupa = tk.Button(image = img_lupa, cursor="hand2")
+        #btn_lupa["bg"] = "white"
+        #btn_lupa["border"] = "0"
+        btn_crear = tk.Button(text = "Crear", cursor="hand2")
+        btn_borrar = tk.Button(image = img_borrar, cursor="hand2", width=50, height=50)
+        btn_salir = tk.Button(image = img_salir, cursor="hand2", command=self.finalizar_programa)
+        #checkbox
+
+        # Se ubican los widgets en el canvas
+        alineacion_Y = 320
+        canvas_fondo.create_text(60, alineacion_Y, text="Paciente", font=("waltograph", 30))
+        cuadro_window = canvas_fondo.create_window(220, alineacion_Y, window=cuadro_nombre)
+        lupa_window = canvas_fondo.create_window(350, alineacion_Y, window=btn_lupa)
+        crear_window = canvas_fondo.create_window(415, alineacion_Y, window=btn_crear)
+        borrar_window = canvas_fondo.create_window(470, alineacion_Y, window=btn_borrar)
+        salir_window = canvas_fondo.create_window(460, 23, window=btn_salir)
         #cuadro_nombre = tk.Entry(canvas_botones)
         #cuadro_nombre.grid(row=0, column=1, padx=5, pady=5)
        # tk.Button(canvas_botones, text="Clícame").pack() 
 
         self.raiz.mainloop()   
 
-    
+    def finalizar_programa(self):
+        print('Byeee')
+        sys.exit(0)
    # def aparecer(self):
     #    self.raiz.mainloop()    
 
