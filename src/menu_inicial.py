@@ -1,9 +1,6 @@
 import tkinter as tk
 import sys
 
-#falta:
-    # agregar icono de app arriba
-
 class Menu:
     def __init__(self):
         self.raiz = tk.Tk() 
@@ -15,8 +12,7 @@ class Menu:
         posicion = str(ancho_ventana) + "x" + str(alto_ventana) + "+" + str(x_ventana) + "+" + str(y_ventana)
         
         self.raiz.geometry(posicion) #Configurar tamaño 
-        #self.raiz.iconbitmap('/imagenes/diente.ico') #Cambiar el icono, debe ser .ico
-        #self.raiz.iconbitmap(r'../OdontoSearcher/diente.ico') #Cambiar el icono 
+        self.raiz.iconbitmap('../imagenes/diente.ico') #Cambiar el icono por defecto, debe ser .ico
         self.raiz.config(bg="white") #Cambiar color de fondo
         self.raiz.resizable(False,False)
         
@@ -35,6 +31,11 @@ class Menu:
         #canvas_botones.place(x=0, y=298)
         #canvas_botones.create_image((0,100), image=img_fondo, anchor="sw")
 
+        # Variables Control
+        historia_clinica = tk.IntVar()
+        odontograma = tk.IntVar()
+
+
         # Widgets menu
         # cuadros
         cuadro_nombre = tk.Entry(canvas_fondo, width=20)
@@ -43,39 +44,29 @@ class Menu:
         img_lupa = tk.PhotoImage(file="../imagenes/lupa2.png")
         img_borrar = tk.PhotoImage(file="../imagenes/borrar.png", width=50, height=50)
         img_salir = tk.PhotoImage(file="../imagenes/exit.png")
+        img_crear = tk.PhotoImage(file="../imagenes/crear.png", width=50, height=50)
         # botones
-        btn_lupa = tk.Button(image = img_lupa, cursor="hand2")
-        #btn_lupa["bg"] = "white"
-        #btn_lupa["border"] = "0"
-        btn_crear = tk.Button(text = "Crear", cursor="hand2")
-        btn_borrar = tk.Button(image = img_borrar, cursor="hand2", width=50, height=50)
-        btn_salir = tk.Button(image = img_salir, cursor="hand2", command=self.finalizar_programa)
+        btn_lupa = tk.Button(canvas_fondo, image = img_lupa, cursor="hand2")
+        btn_crear = tk.Button(canvas_fondo, image = img_crear, cursor="hand2", width=50, height=50)
+        btn_borrar = tk.Button(canvas_fondo, image = img_borrar, cursor="hand2", width=50, height=50)
+        btn_salir = tk.Button(canvas_fondo, image = img_salir, cursor="hand2", command=self.finalizar_programa)
         #checkbox
+        check_hist = tk.Checkbutton(canvas_fondo, text="Historia Clínica", variable=historia_clinica, onvalue=1, offvalue=0)#, command=opcionesViaje)
+        check_odont = tk.Checkbutton(canvas_fondo, text="Odontograma", variable=odontograma, onvalue=1, offvalue=0)#, command=opcionesViaje)
 
         # Se ubican los widgets en el canvas
         alineacion_Y = 320
         canvas_fondo.create_text(60, alineacion_Y, text="Paciente", font=("waltograph", 30))
         cuadro_window = canvas_fondo.create_window(220, alineacion_Y, window=cuadro_nombre)
         lupa_window = canvas_fondo.create_window(350, alineacion_Y, window=btn_lupa)
-        crear_window = canvas_fondo.create_window(415, alineacion_Y, window=btn_crear)
+        crear_window = canvas_fondo.create_window(411, alineacion_Y, window=btn_crear)
         borrar_window = canvas_fondo.create_window(470, alineacion_Y, window=btn_borrar)
         salir_window = canvas_fondo.create_window(460, 23, window=btn_salir)
-        #cuadro_nombre = tk.Entry(canvas_botones)
-        #cuadro_nombre.grid(row=0, column=1, padx=5, pady=5)
-       # tk.Button(canvas_botones, text="Clícame").pack() 
+        hist_clinica_window = canvas_fondo.create_window(150, 370, window=check_hist)
+        odonto_window = canvas_fondo.create_window(300, 370, window=check_odont)
 
         self.raiz.mainloop()   
 
     def finalizar_programa(self):
         print('Byeee')
         sys.exit(0)
-   # def aparecer(self):
-    #    self.raiz.mainloop()    
-
-
-
-# create the application
-#app = Menu()
-
-# start the program
-#app.raiz.mainloop()
