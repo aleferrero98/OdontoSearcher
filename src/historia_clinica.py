@@ -1,5 +1,5 @@
-#import calendario
 import tkinter as tk
+import calendario as cal
 
 
 #----------------------ficha odontologica---------------------------
@@ -21,9 +21,26 @@ class Datos_personales:
         self.frame = tk.Frame(self.raiz, width=ancho_ventana, height=alto_ventana)
         self.frame.pack() #agrega el Frame al root, el tamaño al que se ajusta es al del frame
         
+        #Imagenes
+        img_flecha = tk.PhotoImage(file="../imagenes/flecha.png", width=25, height=25)
+
         # Variables de control
-        opt_embarazo = tk.IntVar()
-        opt_fuma = tk.IntVar()
+        self.nombre = tk.StringVar()
+        self.dni = tk.StringVar()
+        self.fecha_nac = tk.StringVar()
+        self.edad = tk.StringVar()
+        self.sexo = tk.StringVar()
+        self.telefono = tk.StringVar()
+        self.domicilio = tk.StringVar()
+        self.barrio = tk.StringVar()
+        self.ciudad = tk.StringVar()
+        self.alergias = tk.StringVar()
+        self.medicacion = tk.StringVar()
+        self.enfermedades = tk.StringVar()
+        self.opt_embarazada = tk.IntVar()
+        self.opt_fuma = tk.IntVar()
+        self.embarazada = False
+        self.fuma = False
         
         #TITULO
         lbl_ficha_odonto = tk.Label(self.frame, text="Ficha Odontológica")
@@ -43,6 +60,10 @@ class Datos_personales:
         
         lbl_fecha_nac = tk.Label(self.frame, text="Fecha de nacimiento:")
         lbl_fecha_nac.grid(row=3, column=0, sticky="w", padx=5, pady=5)
+        ent_fecha = tk.Entry(self.frame, textvariable=self.fecha_nac)
+        ent_fecha.grid(row=3, column=1, padx=5, pady=5)
+        btn_flecha = tk.Button(self.frame, image = img_flecha, cursor="hand2", command=lambda:self.abrir_calendario(fecha_nac))
+        btn_flecha.grid(row=3, column=2, padx=5, pady=5)
 
         lbl_edad = tk.Label(self.frame, text="Edad:")
         lbl_edad.grid(row=4, column=0, sticky="w", padx=5, pady=5)
@@ -93,19 +114,40 @@ class Datos_personales:
         #tercera parte
         lbl_embarazo = tk.Label(self.frame, text="¿Embarazada?")
         lbl_embarazo.grid(row=13, column=0, sticky="w", padx=5, pady=5)
-        embarazo_si = tk.Radiobutton(self.frame, text="Si", variable=opt_embarazo, value=1)#, command=imprimir)
+        embarazo_si = tk.Radiobutton(self.frame, text="Si", variable=self.opt_embarazada, value=1, command=self.set_embarazada(True))
         embarazo_si.grid(row=13, column=1, sticky="w", padx=5, pady=5)
-        embarazo_no = tk.Radiobutton(self.frame, text="No", variable=opt_embarazo, value=2)#, command=imprimir)
+        embarazo_no = tk.Radiobutton(self.frame, text="No", variable=self.opt_embarazada, value=2, command=self.set_embarazada(False))
         embarazo_no.grid(row=13, column=2, sticky="w", padx=5, pady=5)
 
         lbl_fuma = tk.Label(self.frame, text="¿Fuma?")
         lbl_fuma.grid(row=14, column=0, sticky="w", padx=5, pady=5)
-        fuma_si = tk.Radiobutton(self.frame, text="Si", variable=opt_fuma, value=1)#, command=imprimir)
+        fuma_si = tk.Radiobutton(self.frame, text="Si", variable=self.opt_fuma, value=1, command=self.set_fuma(True))
         fuma_si.grid(row=14, column=1, sticky="w", padx=5, pady=5)
-        fuma_no = tk.Radiobutton(self.frame, text="No", variable=opt_fuma, value=2)#, command=imprimir)
+        fuma_no = tk.Radiobutton(self.frame, text="No", variable=self.opt_fuma, value=2, command=self.set_fuma(False))
         fuma_no.grid(row=14, column=2, sticky="w", padx=5, pady=5)
 
+        btn_guardar = tk.Button(self.frame, text="Guardar", cursor="hand2", command=self.guardar_datos)
+        btn_guardar.grid(row=15, column=1, padx=5, pady=5)
+        btn_cancelar = tk.Button(self.frame, text="Cancelar", cursor="hand2", command=self.cancelar)
+        btn_cancelar.grid(row=15, column=2, padx=5, pady=5)
+
         self.raiz.mainloop()
+
+    def abrir_calendario(self, fecha):
+        calendario = cal.Calendario(fecha)
+
+    def set_embarazada(self, valor):
+        self.embarazada = valor
+
+    def set_fuma(self, valor):
+        self.fuma = valor
+
+    def cancelar(self):
+        self.raiz.destroy()
+
+    def guardar_datos(self):
+        """guarda los datos en la BDD"""
+
 
 #---------------------historia clinica-----------------------------
 class Historia_clinica:
@@ -146,5 +188,5 @@ class Historia_clinica:
 
 
 
-#ex = Datos_personales()
-ex = Historia_clinica()
+ex = Datos_personales()
+#ex = Historia_clinica()

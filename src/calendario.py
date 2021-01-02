@@ -1,34 +1,38 @@
 from tkinter import *
 from tkcalendar import *
 
-root = Tk()
-root.title('Calendario')
-root.iconbitmap('../imagenes/diente.ico')
-#root.geometry('400x400')
+class Calendario:
+    def __init__(self, fecha):
+        self.root = Tk()
+        self.root.title('Calendario')
+        self.root.iconbitmap('../imagenes/diente.ico')
+        #root.geometry('400x400')
 
-fecha_nac = StringVar(value="")
+        self.fecha = fecha
 
-frame = Frame(root)
-frame.pack()
+        self.frame = Frame(self.root)
+        self.frame.pack()
 
-cal = Calendar(frame, selectmode="day", date_pattern="dd/mm/y")
-cal.grid(row=1, column=1, columnspan=2, padx=5, pady=5)
+        self.cal = Calendar(self.frame, selectmode="day", date_pattern="dd/mm/y")
+        self.cal.grid(row=1, column=1, columnspan=2, padx=5, pady=5)
 
-def get_fecha():
-    fecha_nac.set(cal.get_date())
-    label_fecha.config(text=fecha_nac.get())
+        self.btn_apply = Button(self.frame, text="Aplicar", command=self.get_fecha) # el "aplicar" es solo para que te muestre la fecha
+        self.btn_apply.grid(row=2, column=1, padx=5, pady=5)              # lo que importa es el OK
+        self.label_fecha = Label(self.frame, text=self.cal.get_date())
+        self.label_fecha.config(bg="#FFF576")
+        self.label_fecha.grid(row=2, column=2, padx=5, pady=5)
+        self.btn_ok = Button(self.frame, text="OK", width=10, command=self.save_fecha)
+        self.btn_ok.grid(row=3, column=1, columnspan=2, padx=5, pady=5)
 
-def save_fecha():
-    fecha_nac.set(cal.get_date()) #guarda la fecha seleccionada en la variable de control
-    root.destroy() #cierra pop-up
+        self.root.mainloop()
 
-btn_apply = Button(frame, text="Aplicar", command=get_fecha) # el "aplicar" es solo para que te muestre la fecha
-btn_apply.grid(row=2, column=1, padx=5, pady=5)              # lo que importa es el OK
-label_fecha = Label(frame, text=cal.get_date())
-label_fecha.config(bg="#FFF576")
-label_fecha.grid(row=2, column=2, padx=5, pady=5)
-btn_ok = Button(frame, text="OK", width=10, command=save_fecha)
-btn_ok.grid(row=3, column=1, columnspan=2, padx=5, pady=5)
+    def get_fecha(self):
+        self.fecha.set(self.cal.get_date())
+        self.label_fecha.config(text=self.fecha.get())
+
+    def save_fecha(self):
+        self.fecha.set(self.cal.get_date()) #guarda la fecha seleccionada en la variable de control
+        self.root.destroy() #cierra pop-up
 
 
-root.mainloop()
+#ex = Calendario()
