@@ -1,8 +1,36 @@
-#Menu en tkinter
+#Ventanas emergentes en tkinter
 
 from tkinter import *
+from tkinter import messagebox
 
 root = Tk()
+
+def infoAdicional():
+    messagebox.showinfo("Odonto Searcher", "Buscador de historias clinicas - version 2021")
+
+def avisoLicencia():
+    messagebox.showwarning("Licencia", "Producto bajo licencia GNU")
+
+def salirApp():
+    #Si - No
+    valor = messagebox.askquestion("Salir", "¿Desea Salir de la aplicación?")
+    print(valor)
+    if(valor == "yes"):
+        root.destroy()
+
+def cerrarVentana():
+    #Aceptar - Cancelar
+    valor = messagebox.askokcancel("Cerrar", "¿Desea guardar los cambios antes de salir?")
+    print(valor)
+    if(valor == True):
+        root.destroy()
+
+def guardarDoc():
+    valor = messagebox.askretrycancel("Reintentar", "No es posible guardar. Documento bloqueado.")
+    print(valor)
+    if(valor == True):
+        guardarDoc()
+
 barraMenu = Menu(root)
 root.config(menu=barraMenu, width=300, height=300)
 
@@ -19,11 +47,11 @@ barraMenu.add_cascade(label="Ayuda", menu=archivoAyuda)
 archivoMenu.add_command(label="Nuevo archivo")
 archivoMenu.add_command(label="Abrir archivo")
 archivoMenu.add_separator()
-archivoMenu.add_command(label="Guardar")
+archivoMenu.add_command(label="Guardar", command=guardarDoc)
 archivoMenu.add_command(label="Guardar como")
 archivoMenu.add_separator()
-archivoMenu.add_command(label="Cerrar")
-archivoMenu.add_command(label="Salir")
+archivoMenu.add_command(label="Cerrar", command=cerrarVentana)
+archivoMenu.add_command(label="Salir", command=salirApp)
 
 archivoEdicion.add_command(label="Copiar")
 archivoEdicion.add_command(label="Cortar")
@@ -39,7 +67,7 @@ archivoHerramientas.add_command(label="Abrir Terminal")
 
 archivoAyuda.add_command(label="Documentación")
 archivoAyuda.add_command(label="Tips y ayudas")
-archivoAyuda.add_command(label="Licencia")
-archivoAyuda.add_command(label="Acerca de")
+archivoAyuda.add_command(label="Licencia", command=avisoLicencia)
+archivoAyuda.add_command(label="Acerca de", command=infoAdicional)
 
 root.mainloop()
