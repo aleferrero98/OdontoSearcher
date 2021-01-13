@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import ttk
 import calendario as cal
 
 
@@ -72,8 +73,9 @@ class Datos_personales:
 
         lbl_sexo = tk.Label(self.frame, text="Sexo:")
         lbl_sexo.grid(row=4, column=2, sticky="w", padx=5, pady=5)
-        ent_sexo = tk.Entry(self.frame, textvariable=self.sexo)
-        ent_sexo.grid(row=4, column=3, padx=5, pady=5)
+        comb_sexo = ttk.Combobox(self.frame, textvariable=self.sexo)
+        comb_sexo.grid(row=4, column=3, padx=5, pady=5)
+        comb_sexo["values"] = ["Masculino", "Femenino"]
 
         lbl_telefono = tk.Label(self.frame, text="Teléfono de contacto:")
         lbl_telefono.grid(row=5, column=0, sticky="w", padx=5, pady=5)
@@ -141,6 +143,17 @@ class Datos_personales:
         btn_cancelar.grid(row=15, column=2, padx=5, pady=5)
 
         self.raiz.mainloop()
+        print("NOMBRE:", self.nombre.get())
+        print("DNI", self.dni.get())
+        print("FECHA NACIMIENTO:", self.fecha_nac.get())
+        print("EDAD:", self.edad.get())
+        print("SEXO:", self.sexo.get())
+        print("TELEFONO:", self.telefono.get())
+        print("DOMICILIO:", self.domicilio.get())
+        print("BARRIO:", self.barrio.get())
+        print("CIUDAD:", self.ciudad.get())
+        print("EMBARAZADA:", self.embarazada)
+        print("FUMA:", self.fuma)
 
     def abrir_calendario(self, fecha):
         calendario = cal.Calendario(fecha)
@@ -152,10 +165,12 @@ class Datos_personales:
         self.fuma = valor
 
     def cancelar(self):
+        """ Cierra la ventana """
         self.raiz.destroy()
 
     def get_text_input(self, texto):
-        result = texto.get("1.0","end-1c")
+        """ Obtiene el texto almacenado en un cuadro de texto """
+        result = texto.get("1.0","end-1c") 
         print(result)
         return result
 
@@ -226,7 +241,30 @@ class Historia_clinica:
         ent_fecha.grid(row=num_fila, column=0, padx=5, pady=5)
         btn_flecha = tk.Button(self.tabla, image = self.img_flecha, cursor="hand2", command=lambda:self.abrir_calendario(self.fecha))
         btn_flecha.grid(row=num_fila, column=1, padx=5, pady=5)
-
+        comb_prestacion = ttk.Combobox(self.tabla, width=35, height=20)
+        comb_prestacion.grid(row=num_fila, column=2, padx=5, pady=5)
+        comb_prestacion["values"] = ["EXAMEN CLÍNICO", "CONSULTA DE URGENCIA", 
+                                    "CONSULTA PERIÓDICA PREVENTIVA",
+                                    "CARIES LIMITADA AL ESMALTE",
+                                    "CARIES AMELODENTINARIA CON COMPROMISO PULPAR",
+                                    "CARIES PROFUNDA CON COMPROMISO PULPAR",
+                                    "TRATAMIENTO ENDODONTICO",
+                                    "BIOPULPECTOMIA PARCIAL",
+                                    "NECROPULPECTOMIA PARCIAL",
+                                    "PROTECCIÓN PULPAR DIRECTA",
+                                    "PROTECCIÓN PULPAR INDIRECTA",
+                                    "RETRATAMIENTO CONSERVADOR",
+                                    "INCRUSTACIÓN",
+                                    "CARILLAS",
+                                    "PRÓTESIS PARCIAL",
+                                    "COMPOSTURA",
+                                    "REBASADO",
+                                    "DEPURACIÓN",
+                                    "TOPICACIÓN CON FLUOR",
+                                    "INACTIVACIÓN DE POLICARIESSELLADOR DE FOSAS PUNTOS SURCOS Y FISURAS",
+                                    "TRATAMIENTO DE GINGIVITIS",
+                                    "TRATAMIENTO DE PERIODONTITIS",
+                                    "EXODONCIA"]
         txt_observacion = tk.Text(self.tabla, width=20, height=5)
         txt_observacion.grid(row=num_fila, column=3, padx=5, pady=5)
         scroll_observacion = tk.Scrollbar(self.tabla, command=txt_observacion.yview)
