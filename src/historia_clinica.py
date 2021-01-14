@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 import calendario as cal
+#import base_datos as bdd
 
 
 #----------------------ficha odontologica---------------------------
@@ -27,7 +28,7 @@ class Datos_personales:
 
         # Variables de control
         self.nombre = tk.StringVar()
-        self.dni = tk.StringVar()
+        self.dni = tk.IntVar() # el DNI es entero -> es primary key en la BDD
         self.fecha_nac = tk.StringVar()
         self.edad = tk.StringVar()
         self.sexo = tk.StringVar()
@@ -144,7 +145,7 @@ class Datos_personales:
 
         self.raiz.mainloop()
         print("NOMBRE:", self.nombre.get())
-        print("DNI", self.dni.get())
+        print("DNI:", self.dni.get())
         print("FECHA NACIMIENTO:", self.fecha_nac.get())
         print("EDAD:", self.edad.get())
         print("SEXO:", self.sexo.get())
@@ -288,5 +289,5 @@ class Historia_clinica:
 
 
 
-#ex = Datos_personales()
-ex = Historia_clinica()
+ex = Datos_personales()
+#ex = Historia_clinica()
