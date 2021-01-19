@@ -1,5 +1,7 @@
 import tkinter as tk
 import sys
+from tkinter import messagebox
+import base_datos as bdd
 
 class Menu:
     def __init__(self):
@@ -31,42 +33,75 @@ class Menu:
         #canvas_botones.place(x=0, y=298)
         #canvas_botones.create_image((0,100), image=img_fondo, anchor="sw")
 
+        # Base de datos
+        base_datos = bdd.Base_Datos("Base_De_Datos")
+        
         # Variables Control
-        historia_clinica = tk.IntVar()
-        odontograma = tk.IntVar()
-
+        self.datos_personales = tk.IntVar()
+        self.historia_clinica = tk.IntVar()
+        self.odontograma = tk.IntVar()
+        self.texto_busqueda = tk.StringVar()
 
         # Widgets menu
         # cuadros
-        cuadro_nombre = tk.Entry(canvas_fondo, width=20)
+        cuadro_nombre = tk.Entry(canvas_fondo, width=20, textvariable=self.texto_busqueda)
         cuadro_nombre.config(fg="black", justify="left", font=("arial", 12))
         #imagenes
         img_lupa = tk.PhotoImage(file="../imagenes/lupa2.png")
         img_borrar = tk.PhotoImage(file="../imagenes/borrar.png", width=50, height=50)
         img_salir = tk.PhotoImage(file="../imagenes/exit.png")
-        img_crear = tk.PhotoImage(file="../imagenes/crear.png", width=50, height=50)
+        #img_crear = tk.PhotoImage(file="../imagenes/crear.png", width=50, height=50)
         # botones
-        btn_lupa = tk.Button(canvas_fondo, image = img_lupa, cursor="hand2")
-        btn_crear = tk.Button(canvas_fondo, image = img_crear, cursor="hand2", width=50, height=50)
-        btn_borrar = tk.Button(canvas_fondo, image = img_borrar, cursor="hand2", width=50, height=50)
+        btn_lupa = tk.Button(canvas_fondo, image = img_lupa, cursor="hand2", command=self.buscar_registro)
+        #btn_crear = tk.Button(canvas_fondo, image = img_crear, cursor="hand2", width=50, height=50)
+        btn_borrar = tk.Button(canvas_fondo, image = img_borrar, cursor="hand2", width=50, height=50, command=self.borrar_registro)
         btn_salir = tk.Button(canvas_fondo, image = img_salir, cursor="hand2", command=self.finalizar_programa)
         #checkbox
-        check_hist = tk.Checkbutton(canvas_fondo, text="Historia Clínica", variable=historia_clinica, onvalue=1, offvalue=0)#, command=opcionesViaje)
-        check_odont = tk.Checkbutton(canvas_fondo, text="Odontograma", variable=odontograma, onvalue=1, offvalue=0)#, command=opcionesViaje)
+        check_datos = tk.Checkbutton(canvas_fondo, text="Datos Personales", variable=self.datos_personales, onvalue=1, offvalue=0)# command=abrir_datos_personales)
+        check_hist = tk.Checkbutton(canvas_fondo, text="Historia Clínica", variable=self.historia_clinica, onvalue=1, offvalue=0)# command=abrir_historia_clinica)
+        check_odont = tk.Checkbutton(canvas_fondo, text="Odontograma", variable=self.odontograma, onvalue=1, offvalue=0)#, command=abrir_odontograma)
 
         # Se ubican los widgets en el canvas
         alineacion_Y = 320
         canvas_fondo.create_text(60, alineacion_Y, text="Paciente", font=("waltograph", 30))
         cuadro_window = canvas_fondo.create_window(220, alineacion_Y, window=cuadro_nombre)
         lupa_window = canvas_fondo.create_window(350, alineacion_Y, window=btn_lupa)
-        crear_window = canvas_fondo.create_window(411, alineacion_Y, window=btn_crear)
+        #crear_window = canvas_fondo.create_window(411, alineacion_Y, window=btn_crear)
         borrar_window = canvas_fondo.create_window(470, alineacion_Y, window=btn_borrar)
         salir_window = canvas_fondo.create_window(460, 23, window=btn_salir)
-        hist_clinica_window = canvas_fondo.create_window(150, 370, window=check_hist)
-        odonto_window = canvas_fondo.create_window(300, 370, window=check_odont)
+        datos_window = canvas_fondo.create_window(100, 370, window=check_datos)
+        hist_clinica_window = canvas_fondo.create_window(240, 370, window=check_hist)
+        odonto_window = canvas_fondo.create_window(370, 370, window=check_odont)
 
         self.raiz.mainloop()   
 
     def finalizar_programa(self):
         print('Byeee')
         sys.exit(0)
+    
+    def borrar_registro(self):
+        """ Borra el registro indicado por el nombre o dni del paciente
+            desde la base de datos. """
+        opt_datos = self.datos_personales.get()
+        opt_historia = self.historia_clinica.get()
+        opt_odonto = self.odontograma.get()
+
+        if(opt_datos == 0 and opt_historia == 0 and opt_odonto == 0):
+            messagebox.showwarning("Advertencia", "¡Debe seleccionar la opción a eliminar!")
+        if(opt_datos == 1):
+            msj = "¿Desea realmente borrar los datos personales de " + str(self.texto_busqueda.get()) + "?"
+            ret = messagebox.askokcancel("Borrar registro de paciente", msj)
+            print("BORRAR", ret)
+        if(opt_historia == 1):
+            msj = "¿Desea realmente borrar la historia clínica de " + str(self.texto_busqueda.get()) + "?"
+            ret = messagebox.askokcancel("Borrar registro de paciente", msj)
+            print("BORRAR", ret)
+        if(opt_odonto == 1):
+            msj = "¿Desea realmente borrar el odontograma de " + str(self.texto_busqueda.get()) + "?"
+            ret = messagebox.askokcancel("Borrar registro de paciente", msj)
+            print("BORRAR", ret)
+
+    def buscar_registro(self):
+        """ Carga la historia clinica, datos u odontograma del paciente 
+            desde la base de datos, indicado por su dni o nombre. """
+

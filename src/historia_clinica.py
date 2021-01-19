@@ -1,12 +1,14 @@
 import tkinter as tk
 from tkinter import ttk
 import calendario as cal
+import paciente as pa
 #import base_datos as bdd
 
 
 #----------------------ficha odontologica---------------------------
 class Datos_personales:
-    def __init__(self):
+    def __init__(self, base_de_datos):
+        self.base_datos = base_de_datos
         self.raiz = tk.Tk() 
         self.raiz.title("Ficha Odontológica") #Cambiar el nombre de la ventana 
         ancho_ventana = 600
@@ -27,22 +29,9 @@ class Datos_personales:
         img_flecha = tk.PhotoImage(file="../imagenes/flecha.png", width=25, height=25)
 
         # Variables de control
-        self.nombre = tk.StringVar()
-        self.dni = tk.IntVar() # el DNI es entero -> es primary key en la BDD
-        self.fecha_nac = tk.StringVar()
-        self.edad = tk.StringVar()
-        self.sexo = tk.StringVar()
-        self.telefono = tk.StringVar()
-        self.domicilio = tk.StringVar()
-        self.barrio = tk.StringVar()
-        self.ciudad = tk.StringVar()
-      #  self.alergias = tk.StringVar()
-      #  self.medicacion = tk.StringVar()
-      #  self.enfermedades = tk.StringVar()
         self.opt_embarazada = tk.IntVar()
         self.opt_fuma = tk.IntVar()
-        self.embarazada = False
-        self.fuma = False
+        paciente = pa.Paciente()
         
         #TITULO
         lbl_ficha_odonto = tk.Label(self.frame, text="Ficha Odontológica")
@@ -52,50 +41,50 @@ class Datos_personales:
         #Primera parte
         lbl_nombre = tk.Label(self.frame, text="Apellido y nombre:")
         lbl_nombre.grid(row=1, column=0, sticky="w", padx=5, pady=5)
-        ent_nombre = tk.Entry(self.frame, textvariable=self.nombre)
+        ent_nombre = tk.Entry(self.frame, textvariable=paciente.nombre)
         ent_nombre.grid(row=1, column=1, padx=5, pady=5)
         
         lbl_dni = tk.Label(self.frame, text="DNI:")
         lbl_dni.grid(row=2, column=0, sticky="w", padx=5, pady=5)
-        ent_dni = tk.Entry(self.frame, textvariable=self.dni)
+        ent_dni = tk.Entry(self.frame, textvariable=paciente.dni)
         ent_dni.grid(row=2, column=1, padx=5, pady=5)
         
         lbl_fecha_nac = tk.Label(self.frame, text="Fecha de nacimiento:")
         lbl_fecha_nac.grid(row=3, column=0, sticky="w", padx=5, pady=5)
-        ent_fecha = tk.Entry(self.frame, textvariable=self.fecha_nac)
+        ent_fecha = tk.Entry(self.frame, textvariable=paciente.fecha_nac)
         ent_fecha.grid(row=3, column=1, padx=5, pady=5)
         btn_flecha = tk.Button(self.frame, image = img_flecha, cursor="hand2", command=lambda:self.abrir_calendario(self.fecha_nac))
         btn_flecha.grid(row=3, column=2, padx=5, pady=5)
 
         lbl_edad = tk.Label(self.frame, text="Edad:")
         lbl_edad.grid(row=4, column=0, sticky="w", padx=5, pady=5)
-        ent_edad = tk.Entry(self.frame, textvariable=self.edad)
+        ent_edad = tk.Entry(self.frame, textvariable=paciente.edad)
         ent_edad.grid(row=4, column=1, padx=5, pady=5)
 
         lbl_sexo = tk.Label(self.frame, text="Sexo:")
         lbl_sexo.grid(row=4, column=2, sticky="w", padx=5, pady=5)
-        comb_sexo = ttk.Combobox(self.frame, textvariable=self.sexo)
+        comb_sexo = ttk.Combobox(self.frame, textvariable=paciente.sexo)
         comb_sexo.grid(row=4, column=3, padx=5, pady=5)
         comb_sexo["values"] = ["Masculino", "Femenino"]
 
         lbl_telefono = tk.Label(self.frame, text="Teléfono de contacto:")
         lbl_telefono.grid(row=5, column=0, sticky="w", padx=5, pady=5)
-        ent_telefono = tk.Entry(self.frame, textvariable=self.telefono)
+        ent_telefono = tk.Entry(self.frame, textvariable=paciente.telefono)
         ent_telefono.grid(row=5, column=1, padx=5, pady=5)
 
         lbl_domicilio = tk.Label(self.frame, text="Domicilio:")
         lbl_domicilio.grid(row=6, column=0, sticky="w", padx=5, pady=5)
-        ent_domicilio = tk.Entry(self.frame, textvariable=self.domicilio)
+        ent_domicilio = tk.Entry(self.frame, textvariable=paciente.domicilio)
         ent_domicilio.grid(row=6, column=1, padx=5, pady=5)
 
         lbl_barrio = tk.Label(self.frame, text="Barrio:")
         lbl_barrio.grid(row=7, column=0, sticky="w", padx=5, pady=5)
-        ent_barrio = tk.Entry(self.frame, textvariable=self.barrio)
+        ent_barrio = tk.Entry(self.frame, textvariable=paciente.barrio)
         ent_barrio.grid(row=7, column=1, padx=5, pady=5)
 
         lbl_ciudad = tk.Label(self.frame, text="Ciudad:")
         lbl_ciudad.grid(row=7, column=2, sticky="w", padx=5, pady=5)
-        ent_ciudad = tk.Entry(self.frame, textvariable=self.ciudad)
+        ent_ciudad = tk.Entry(self.frame, textvariable=paciente.ciudad)
         ent_ciudad.grid(row=7, column=3, padx=5, pady=5)
         
         #segunda parte
@@ -144,17 +133,17 @@ class Datos_personales:
         btn_cancelar.grid(row=15, column=2, padx=5, pady=5)
 
         self.raiz.mainloop()
-        print("NOMBRE:", self.nombre.get())
-        print("DNI:", self.dni.get())
-        print("FECHA NACIMIENTO:", self.fecha_nac.get())
-        print("EDAD:", self.edad.get())
-        print("SEXO:", self.sexo.get())
-        print("TELEFONO:", self.telefono.get())
-        print("DOMICILIO:", self.domicilio.get())
-        print("BARRIO:", self.barrio.get())
-        print("CIUDAD:", self.ciudad.get())
-        print("EMBARAZADA:", self.embarazada)
-        print("FUMA:", self.fuma)
+        print("NOMBRE:", paciente.nombre.get())
+        print("DNI:", paciente.dni.get())
+        print("FECHA NACIMIENTO:", paciente.fecha_nac.get())
+        print("EDAD:", paciente.edad.get())
+        print("SEXO:", paciente.sexo.get())
+        print("TELEFONO:", paciente.telefono.get())
+        print("DOMICILIO:", paciente.domicilio.get())
+        print("BARRIO:", paciente.barrio.get())
+        print("CIUDAD:", paciente.ciudad.get())
+        print("EMBARAZADA:", paciente.embarazada)
+        print("FUMA:", paciente.fuma)
 
     def abrir_calendario(self, fecha):
         calendario = cal.Calendario(fecha)

@@ -20,9 +20,8 @@ class Base_Datos:
                                 DOMICILIO VARCHAR(50), BARRIO VARCHAR(30), CIUDAD VARCHAR(20),\
                                 ALERGIAS TEXT, MEDICACION TEXT, ENFERMEDADES TEXT,\
                                 EMBARAZADA INTEGER, FUMA INTEGER,\
-                                ODONTOGRAMA BLOB,\
                                 PRIMARY KEY (DNI))")    
-
+#                            ODONTOGRAMA BLOB,\
         self.cursor_bdd.execute("CREATE TABLE IF NOT EXISTS HISTORIA_CLINICA \
                                 (FECHA VARCHAR(15), PRESTACION VARCHAR(50), OBSERVACIONES TEXT,\
                                 DNI INTEGER,\
