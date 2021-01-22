@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import tkinter as tk
 import sys
 from tkinter import messagebox
@@ -124,11 +127,11 @@ class Menu:
             messagebox.showwarning("Advertencia", "¡Debe seleccionar la opción a buscar!")
         if(opt_datos == 1):
             print('datos')
-            self.vent_datos_personales = hc.Datos_personales(self.base_datos)
+            self.vent_datos_personales = hc.Datos_personales(self.base_datos, self.texto_busqueda.get())
             #input("hola:")
         if(opt_historia == 1):
             print('historia')
-            datos = hc.Historia_clinica(self.base_datos)
+            self.vent_hist_clinica = hc.Historia_clinica(self.base_datos)
         if(opt_odonto == 1):
             print("ODONTOGRAMA PNG")
         

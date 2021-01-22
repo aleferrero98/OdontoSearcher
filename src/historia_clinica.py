@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import tkinter as tk
 from tkinter import ttk
 import calendario as cal
@@ -7,8 +10,9 @@ import paciente as pa
 #----------------------ficha odontologica---------------------------
 class Datos_personales:
 
-    def __init__(self, base_de_datos):
+    def __init__(self, base_de_datos, id):
         self.base_datos = base_de_datos
+        self.id = id
         #self.raiz = tk.Tk() 
         self.raiz = tk.Toplevel() 
         self.raiz.title("Ficha Odontológica") #Cambiar el nombre de la ventana 
@@ -30,9 +34,9 @@ class Datos_personales:
         self.img_flecha = tk.PhotoImage(file="../imagenes/flecha.png", width=25, height=25)
 
         # Variables de control
-        self.opt_embarazada = tk.IntVar()
-        self.opt_fuma = tk.IntVar()
-        paciente = pa.Paciente()
+        #self.opt_embarazada = tk.IntVar()
+        #self.opt_fuma = tk.IntVar()
+        self.paciente = pa.Paciente(self.id, self.base_datos)
         
         #TITULO
         lbl_ficha_odonto = tk.Label(self.frame, text="Ficha Odontológica")
@@ -42,51 +46,51 @@ class Datos_personales:
         #Primera parte
         lbl_nombre = tk.Label(self.frame, text="Apellido y nombre:")
         lbl_nombre.grid(row=1, column=0, sticky="w", padx=5, pady=5)
-        ent_nombre = tk.Entry(self.frame, textvariable=paciente.nombre)
+        ent_nombre = tk.Entry(self.frame, textvariable=self.paciente.nombre)
         ent_nombre.grid(row=1, column=1, padx=5, pady=5)
         
         lbl_dni = tk.Label(self.frame, text="DNI:")
         lbl_dni.grid(row=2, column=0, sticky="w", padx=5, pady=5)
-        ent_dni = tk.Entry(self.frame, textvariable=paciente.dni)
+        ent_dni = tk.Entry(self.frame, textvariable=self.paciente.dni)
         ent_dni.grid(row=2, column=1, padx=5, pady=5)
         
         lbl_fecha_nac = tk.Label(self.frame, text="Fecha de nacimiento:")
         lbl_fecha_nac.grid(row=3, column=0, sticky="w", padx=5, pady=5)
-        ent_fecha = tk.Entry(self.frame, textvariable=paciente.fecha_nac)
+        ent_fecha = tk.Entry(self.frame, textvariable=self.paciente.fecha_nac)
         ent_fecha.grid(row=3, column=1, padx=5, pady=5)
-        self.btn_flecha = tk.Button(self.frame, image=self.img_flecha, cursor="hand2", command=lambda:self.abrir_calendario(paciente.fecha_nac))
+        self.btn_flecha = tk.Button(self.frame, image=self.img_flecha, cursor="hand2", command=lambda:self.abrir_calendario(self.paciente.fecha_nac))
         #self.btn_flecha = tk.Button(self.frame, cursor="hand2", command=lambda:self.abrir_calendario(paciente.fecha_nac))
         self.btn_flecha.grid(row=3, column=2, padx=5, pady=5)
 
         lbl_edad = tk.Label(self.frame, text="Edad:")
         lbl_edad.grid(row=4, column=0, sticky="w", padx=5, pady=5)
-        ent_edad = tk.Entry(self.frame, textvariable=paciente.edad)
+        ent_edad = tk.Entry(self.frame, textvariable=self.paciente.edad)
         ent_edad.grid(row=4, column=1, padx=5, pady=5)
 
         lbl_sexo = tk.Label(self.frame, text="Sexo:")
         lbl_sexo.grid(row=4, column=2, sticky="w", padx=5, pady=5)
-        comb_sexo = ttk.Combobox(self.frame, textvariable=paciente.sexo)
+        comb_sexo = ttk.Combobox(self.frame, textvariable=self.paciente.sexo)
         comb_sexo.grid(row=4, column=3, padx=5, pady=5)
         comb_sexo["values"] = ["Masculino", "Femenino"]
 
         lbl_telefono = tk.Label(self.frame, text="Teléfono de contacto:")
         lbl_telefono.grid(row=5, column=0, sticky="w", padx=5, pady=5)
-        ent_telefono = tk.Entry(self.frame, textvariable=paciente.telefono)
+        ent_telefono = tk.Entry(self.frame, textvariable=self.paciente.telefono)
         ent_telefono.grid(row=5, column=1, padx=5, pady=5)
 
         lbl_domicilio = tk.Label(self.frame, text="Domicilio:")
         lbl_domicilio.grid(row=6, column=0, sticky="w", padx=5, pady=5)
-        ent_domicilio = tk.Entry(self.frame, textvariable=paciente.domicilio)
+        ent_domicilio = tk.Entry(self.frame, textvariable=self.paciente.domicilio)
         ent_domicilio.grid(row=6, column=1, padx=5, pady=5)
 
         lbl_barrio = tk.Label(self.frame, text="Barrio:")
         lbl_barrio.grid(row=7, column=0, sticky="w", padx=5, pady=5)
-        ent_barrio = tk.Entry(self.frame, textvariable=paciente.barrio)
+        ent_barrio = tk.Entry(self.frame, textvariable=self.paciente.barrio)
         ent_barrio.grid(row=7, column=1, padx=5, pady=5)
 
         lbl_ciudad = tk.Label(self.frame, text="Ciudad:")
         lbl_ciudad.grid(row=7, column=2, sticky="w", padx=5, pady=5)
-        ent_ciudad = tk.Entry(self.frame, textvariable=paciente.ciudad)
+        ent_ciudad = tk.Entry(self.frame, textvariable=self.paciente.ciudad)
         ent_ciudad.grid(row=7, column=3, padx=5, pady=5)
         
         #segunda parte
@@ -97,14 +101,16 @@ class Datos_personales:
         scroll_alergias = tk.Scrollbar(self.frame, command=txt_alergias.yview, width=5)
         scroll_alergias.grid(row=9, column=2, sticky="nsew", padx=10, pady=10)
         txt_alergias.config(yscrollcommand=scroll_alergias.set)
+        self.set_text(txt_alergias, self.paciente.alergias.get())
 
         lbl_medicacion = tk.Label(self.frame, text="Medicación actual:")
         lbl_medicacion.grid(row=10, column=0, sticky="w", padx=5, pady=5)
-        txt_medicion = tk.Text(self.frame, width=20, height=5)
-        txt_medicion.grid(row=10, column=1, padx=5, pady=5)
-        scroll_medicion = tk.Scrollbar(self.frame, command=txt_medicion.yview)
-        scroll_medicion.grid(row=10, column=2, sticky="nsew", padx=10, pady=10)
-        txt_medicion.config(yscrollcommand=scroll_medicion.set)
+        txt_medicacion = tk.Text(self.frame, width=20, height=5)
+        txt_medicacion.grid(row=10, column=1, padx=5, pady=5)
+        scroll_medicacion = tk.Scrollbar(self.frame, command=txt_medicacion.yview)
+        scroll_medicacion.grid(row=10, column=2, sticky="nsew", padx=10, pady=10)
+        txt_medicacion.config(yscrollcommand=scroll_medicacion.set)
+        self.set_text(txt_medicacion, self.paciente.medicacion.get())
 
         lbl_enfermedades = tk.Label(self.frame, text="Enfermedades \nsistémicas relevantes:")
         lbl_enfermedades.grid(row=11, column=0, sticky="w", padx=5, pady=5)
@@ -113,20 +119,21 @@ class Datos_personales:
         scroll_enfermedades = tk.Scrollbar(self.frame, command=txt_enfermedades.yview)
         scroll_enfermedades.grid(row=11, column=2, sticky="nsew", padx=10, pady=10)
         txt_enfermedades.config(yscrollcommand=scroll_enfermedades.set)
+        self.set_text(txt_enfermedades, self.paciente.enfermedades.get())
         
         #tercera parte
         lbl_embarazo = tk.Label(self.frame, text="¿Embarazada?")
         lbl_embarazo.grid(row=13, column=0, sticky="w", padx=5, pady=5)
-        embarazo_si = tk.Radiobutton(self.frame, text="Si", variable=self.opt_embarazada, value=1, command=lambda:self.set_embarazada(True))
+        embarazo_si = tk.Radiobutton(self.frame, text="Si", variable=self.paciente.opt_embarazada, value=1, command=lambda:self.paciente.set_embarazada(True))
         embarazo_si.grid(row=13, column=1, sticky="w", padx=5, pady=5)
-        embarazo_no = tk.Radiobutton(self.frame, text="No", variable=self.opt_embarazada, value=2, command=lambda:self.set_embarazada(False))
+        embarazo_no = tk.Radiobutton(self.frame, text="No", variable=self.paciente.opt_embarazada, value=2, command=lambda:self.paciente.set_embarazada(False))
         embarazo_no.grid(row=13, column=2, sticky="w", padx=5, pady=5)
 
         lbl_fuma = tk.Label(self.frame, text="¿Fuma?")
         lbl_fuma.grid(row=14, column=0, sticky="w", padx=5, pady=5)
-        fuma_si = tk.Radiobutton(self.frame, text="Si", variable=self.opt_fuma, value=1, command=lambda:self.set_fuma(True))
+        fuma_si = tk.Radiobutton(self.frame, text="Si", variable=self.paciente.opt_fuma, value=1, command=lambda:self.paciente.set_fuma(True))
         fuma_si.grid(row=14, column=1, sticky="w", padx=5, pady=5)
-        fuma_no = tk.Radiobutton(self.frame, text="No", variable=self.opt_fuma, value=2, command=lambda:self.set_fuma(False))
+        fuma_no = tk.Radiobutton(self.frame, text="No", variable=self.paciente.opt_fuma, value=2, command=lambda:self.paciente.set_fuma(False))
         fuma_no.grid(row=14, column=2, sticky="w", padx=5, pady=5)
 
         btn_guardar = tk.Button(self.frame, text="Guardar", cursor="hand2", command=lambda:self.get_text_input(txt_enfermedades))
@@ -135,36 +142,35 @@ class Datos_personales:
         btn_cancelar.grid(row=15, column=2, padx=5, pady=5)
 
         self.raiz.mainloop()
-        print("NOMBRE:", paciente.nombre.get())
-        print("DNI:", paciente.dni.get())
-        print("FECHA NACIMIENTO:", paciente.fecha_nac.get())
-        print("EDAD:", paciente.edad.get())
-        print("SEXO:", paciente.sexo.get())
-        print("TELEFONO:", paciente.telefono.get())
-        print("DOMICILIO:", paciente.domicilio.get())
-        print("BARRIO:", paciente.barrio.get())
-        print("CIUDAD:", paciente.ciudad.get())
-        print("EMBARAZADA:", paciente.embarazada)
-        print("FUMA:", paciente.fuma)
+        print("NOMBRE:", self.paciente.nombre.get())
+        print("DNI:", self.paciente.dni.get())
+        print("FECHA NACIMIENTO:", self.paciente.fecha_nac.get())
+        print("EDAD:", self.paciente.edad.get())
+        print("SEXO:", self.paciente.sexo.get())
+        print("TELEFONO:", self.paciente.telefono.get())
+        print("DOMICILIO:", self.paciente.domicilio.get())
+        print("BARRIO:", self.paciente.barrio.get())
+        print("CIUDAD:", self.paciente.ciudad.get())
+        print("EMBARAZADA:", self.paciente.embarazada)
+        print("FUMA:", self.paciente.fuma)
 
     def abrir_calendario(self, fecha):
-        calendario = cal.Calendario(fecha)
-
-    def set_embarazada(self, valor):
-        self.embarazada = valor
-
-    def set_fuma(self, valor):
-        self.fuma = valor
+        #calendario = cal.Calendario(fecha)
+        cal.Calendario(fecha)
 
     def cancelar(self):
         """ Cierra la ventana """
         self.raiz.destroy()
 
-    def get_text_input(self, texto):
+    def get_text_input(self, text):
         """ Obtiene el texto almacenado en un cuadro de texto """
-        result = texto.get("1.0","end-1c") 
+        result = text.get("1.0","end-1c") 
         print(result)
         return result
+
+    def set_text(self, text, contenido):
+        """ Setea el texto a mostrar en un objeto Text. """
+        text.insert("1.0", contenido)
 
     def guardar_datos(self):
         """guarda los datos en la BDD"""
@@ -237,34 +243,23 @@ class Historia_clinica:
         btn_flecha.grid(row=num_fila, column=1, padx=5, pady=5)
         comb_prestacion = ttk.Combobox(self.tabla, width=35, height=20)
         comb_prestacion.grid(row=num_fila, column=2, padx=5, pady=5)
-        comb_prestacion["values"] = ["EXAMEN CLÍNICO", "CONSULTA DE URGENCIA", 
-                                    "CONSULTA PERIÓDICA PREVENTIVA",
-                                    "CARIES LIMITADA AL ESMALTE",
-                                    "CARIES AMELODENTINARIA CON COMPROMISO PULPAR",
-                                    "CARIES PROFUNDA CON COMPROMISO PULPAR",
-                                    "TRATAMIENTO ENDODONTICO",
-                                    "BIOPULPECTOMIA PARCIAL",
-                                    "NECROPULPECTOMIA PARCIAL",
-                                    "PROTECCIÓN PULPAR DIRECTA",
-                                    "PROTECCIÓN PULPAR INDIRECTA",
-                                    "RETRATAMIENTO CONSERVADOR",
-                                    "INCRUSTACIÓN",
-                                    "CARILLAS",
-                                    "PRÓTESIS PARCIAL",
-                                    "COMPOSTURA",
-                                    "REBASADO",
-                                    "DEPURACIÓN",
-                                    "TOPICACIÓN CON FLUOR",
-                                    "INACTIVACIÓN DE POLICARIESSELLADOR DE FOSAS PUNTOS SURCOS Y FISURAS",
-                                    "TRATAMIENTO DE GINGIVITIS",
-                                    "TRATAMIENTO DE PERIODONTITIS",
-                                    "EXODONCIA"]
+        comb_prestacion["values"] = self.leer_archivo('prestaciones.txt')
         txt_observacion = tk.Text(self.tabla, width=20, height=5)
         txt_observacion.grid(row=num_fila, column=3, padx=5, pady=5)
         scroll_observacion = tk.Scrollbar(self.tabla, command=txt_observacion.yview)
         scroll_observacion.grid(row=num_fila, column=4, sticky="nsew", padx=10, pady=10)
         txt_observacion.config(yscrollcommand=scroll_observacion.set)
         self.indice_fila += 1
+
+    def leer_archivo(self, path):
+        """ Funcion que lee un txt linea por linea y devuelve una lista con lo leido. """
+        archivo = open(path, 'r', encoding='utf-8')
+        contenido = archivo.read()
+        #print(contenido)
+        lista = contenido.split(sep='\n')
+        #print(lista)
+        archivo.close()
+        return lista
 
     def abrir_calendario(self, fecha):
         calendario = cal.Calendario(fecha)

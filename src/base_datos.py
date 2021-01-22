@@ -16,7 +16,7 @@ class Base_Datos:
         """ Crea una tabla con atributos en la Base de datos """
         self.cursor_bdd.execute('''CREATE TABLE IF NOT EXISTS DATOS_PERSONALES 
                                 (NOMBRE VARCHAR(50), DNI INTEGER UNIQUE,
-                                FECHA_NACIMIENTO VARCHAR(15), EDAD VARCHAR(10), TELEFONO VARCHAR(20),
+                                FECHA_NACIMIENTO VARCHAR(15), EDAD VARCHAR(10), SEXO VARCHAR(20), TELEFONO VARCHAR(20),
                                 DOMICILIO VARCHAR(50), BARRIO VARCHAR(30), CIUDAD VARCHAR(20),
                                 ALERGIAS TEXT, MEDICACION TEXT, ENFERMEDADES TEXT,
                                 EMBARAZADA INTEGER, FUMA INTEGER,
@@ -85,11 +85,12 @@ class Base_Datos:
         """ Ejecuta el comando especificado en el argumento como un string. """
         self.cursor_bdd.execute(str(comando))
 
-#bdd = Base_Datos("Base_De_Datos")
-#datos = ["Alejandro Ferrero", 40054394, "20/04/1998", "22", "15523673", "Bargellini 527", "Centro", "Suardi, Sta Fe.", "no posee", "ibuprofeno", "covid-19", 0, 0]
-#bdd.insertar_datos(datos, "DATOS_PERSONALES")
-#ret = bdd.leer_datos("DATOS_PERSONALES", "40054394")
-#print(ret)
-#bdd.actualizar_datos("DATOS_PERSONALES", "EDAD", "25", 40054394)
-#bdd.actualizar_datos("DATOS_PERSONALES", "BARRIO", "NVA CBA", 40054394)
-#bdd.borrar_entrada("DATOS_PERSONALES", "Alejandro Ferrero")
+if(__name__ == '__main__'):
+    bdd = Base_Datos("Base_De_Datos")
+    datos = ["Alejandro Ferrero", 40054394, "20/04/1998", "22", "Masculino", "15523673", "Bargellini 527", "Centro", "Suardi, Sta Fe.", "no posee", "ibuprofeno", "covid-19", 2, 2]
+    bdd.insertar_datos(datos, "DATOS_PERSONALES")
+    ret = bdd.leer_datos("DATOS_PERSONALES", "40054394")
+    print(ret)
+    #bdd.actualizar_datos("DATOS_PERSONALES", "EDAD", "25", 40054394)
+    #bdd.actualizar_datos("DATOS_PERSONALES", "BARRIO", "NVA CBA", 40054394)
+    #bdd.borrar_entrada("DATOS_PERSONALES", "Alejandro Ferrero")
