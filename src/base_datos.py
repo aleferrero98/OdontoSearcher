@@ -81,12 +81,15 @@ class Base_Datos:
         print(datos)
         return datos
 
-bdd = Base_Datos("C:/Users/alejandro/Desktop/Base_de_Datos")
+    def ejecutar(self, comando):
+        """ Ejecuta el comando especificado en el argumento como un string. """
+        self.cursor_bdd.execute(str(comando))
 
+#bdd = Base_Datos("Base_De_Datos")
 #datos = ["Alejandro Ferrero", 40054394, "20/04/1998", "22", "15523673", "Bargellini 527", "Centro", "Suardi, Sta Fe.", "no posee", "ibuprofeno", "covid-19", 0, 0]
 #bdd.insertar_datos(datos, "DATOS_PERSONALES")
 #ret = bdd.leer_datos("DATOS_PERSONALES", "40054394")
 #print(ret)
 #bdd.actualizar_datos("DATOS_PERSONALES", "EDAD", "25", 40054394)
 #bdd.actualizar_datos("DATOS_PERSONALES", "BARRIO", "NVA CBA", 40054394)
-bdd.borrar_entrada("DATOS_PERSONALES", "Alejandro Ferrero")
+#bdd.borrar_entrada("DATOS_PERSONALES", "Alejandro Ferrero")

@@ -19,7 +19,6 @@ class Menu:
         self.raiz.iconbitmap('../imagenes/diente.ico') #Cambiar el icono por defecto, debe ser .ico
         self.raiz.config(bg="white") #Cambiar color de fondo
         self.raiz.resizable(False,False)
-        
 
         self.frame = tk.Frame(self.raiz, width=500, height=400)
         self.frame.pack() #agrega el Frame al root, el tamaño al que se ajusta es al del frame
@@ -37,12 +36,17 @@ class Menu:
 
         # Base de datos
         self.base_datos = bdd.Base_Datos("Base_De_Datos")
+       # self.vent_datos_personales = hc.Datos_personales(self.base_datos)
         
         # Variables Control
         self.datos_personales = tk.IntVar()
         self.historia_clinica = tk.IntVar()
         self.odontograma = tk.IntVar()
         self.texto_busqueda = tk.StringVar()
+
+        # Ventanas
+        self.vent_hist_clinica = None
+        self.vent_datos_personales = None
 
         # Widgets menu
         # cuadros
@@ -78,6 +82,7 @@ class Menu:
         self.raiz.mainloop()   
 
     def finalizar_programa(self):
+        self.base_datos.finalizar_conexion()
         print('Byeee')
         sys.exit(0)
     
@@ -94,14 +99,19 @@ class Menu:
             msj = "¿Desea realmente borrar los datos personales de " + str(self.texto_busqueda.get()) + "?"
             ret = messagebox.askokcancel("Borrar registro de paciente", msj)
             print("BORRAR", ret)
+            self.base_datos.borrar_entrada("DATOS_PERSONALES", self.texto_busqueda.get())
+
         if(opt_historia == 1):
             msj = "¿Desea realmente borrar la historia clínica de " + str(self.texto_busqueda.get()) + "?"
             ret = messagebox.askokcancel("Borrar registro de paciente", msj)
             print("BORRAR", ret)
+            self.base_datos.borrar_entrada("HISTORIA_CLINICA", self.texto_busqueda.get())
+
         if(opt_odonto == 1):
             msj = "¿Desea realmente borrar el odontograma de " + str(self.texto_busqueda.get()) + "?"
             ret = messagebox.askokcancel("Borrar registro de paciente", msj)
             print("BORRAR", ret)
+            #BORRAR ODONTOGRAMAAAAAAAAAAAAAAA
 
     def buscar_registro(self):
         """ Carga la historia clinica, datos u odontograma del paciente 
@@ -114,13 +124,14 @@ class Menu:
             messagebox.showwarning("Advertencia", "¡Debe seleccionar la opción a buscar!")
         if(opt_datos == 1):
             print('datos')
-            datos = hc.Datos_personales(self.base_datos)
-            input("hola:")
+            self.vent_datos_personales = hc.Datos_personales(self.base_datos)
+            #input("hola:")
         if(opt_historia == 1):
             print('historia')
             datos = hc.Historia_clinica(self.base_datos)
         if(opt_odonto == 1):
             print("ODONTOGRAMA PNG")
         
-        
+
+
 
