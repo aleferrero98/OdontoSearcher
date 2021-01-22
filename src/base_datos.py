@@ -14,18 +14,18 @@ class Base_Datos:
 
     def crear_tablas(self):
         """ Crea una tabla con atributos en la Base de datos """
-        self.cursor_bdd.execute("CREATE TABLE IF NOT EXISTS DATOS_PERSONALES \
-                                (NOMBRE VARCHAR(50), DNI INTEGER,\
-                                FECHA_NACIMIENTO VARCHAR(15), EDAD VARCHAR(10), TELEFONO VARCHAR(20),\
-                                DOMICILIO VARCHAR(50), BARRIO VARCHAR(30), CIUDAD VARCHAR(20),\
-                                ALERGIAS TEXT, MEDICACION TEXT, ENFERMEDADES TEXT,\
-                                EMBARAZADA INTEGER, FUMA INTEGER,\
-                                PRIMARY KEY (DNI))")    
-#                            ODONTOGRAMA BLOB,\
-        self.cursor_bdd.execute("CREATE TABLE IF NOT EXISTS HISTORIA_CLINICA \
-                                (FECHA VARCHAR(15), PRESTACION VARCHAR(50), OBSERVACIONES TEXT,\
-                                DNI INTEGER,\
-                                FOREIGN KEY (DNI) REFERENCES DATOS_PERSONALES(DNI))")
+        self.cursor_bdd.execute('''CREATE TABLE IF NOT EXISTS DATOS_PERSONALES 
+                                (NOMBRE VARCHAR(50), DNI INTEGER UNIQUE,
+                                FECHA_NACIMIENTO VARCHAR(15), EDAD VARCHAR(10), TELEFONO VARCHAR(20),
+                                DOMICILIO VARCHAR(50), BARRIO VARCHAR(30), CIUDAD VARCHAR(20),
+                                ALERGIAS TEXT, MEDICACION TEXT, ENFERMEDADES TEXT,
+                                EMBARAZADA INTEGER, FUMA INTEGER,
+                                PRIMARY KEY (DNI))''')    
+#                            ODONTOGRAMA BLOB,
+        self.cursor_bdd.execute('''CREATE TABLE IF NOT EXISTS HISTORIA_CLINICA 
+                                (FECHA VARCHAR(15), PRESTACION VARCHAR(50), OBSERVACIONES TEXT,
+                                DNI INTEGER,
+                                FOREIGN KEY (DNI) REFERENCES DATOS_PERSONALES(DNI))''')
 
     def insertar_datos(self, datos, tabla):
         """ Inserta una nueva entrada (datos del paciente) en la tabla.
@@ -39,13 +39,54 @@ class Base_Datos:
             valores += ', '
         valores = valores[:len(valores)-2] # elimina la ultima coma y espacio
         comando = 'INSERT INTO ' + tabla + ' VALUES(' + valores + ')'
+        print(comando)
         self.cursor_bdd.execute(comando)
         self.conexion_bdd.commit() #confirmamos los cambios a realizar 
 
-    def actualizar_datos(self):
+    def actualizar_datos(self, tabla, atributo, nuevo_valor, dni):
         """ Actualiza los datos de una entrada en la tabla de la base de datos """
+        comando = "UPDATE " + str(tabla) + " SET " + str(atributo) + "='" + str(nuevo_valor) + "' WHERE DNI='" + str(dni) + "'"
+        print(comando)
+        self.cursor_bdd.execute(comando)
+        self.conexion_bdd.commit()
 
-    def borrar_entrada(self):
+    def borrar_entrada(self, tabla, clave):
         """ Borra los datos de un usuario """
+        if(self.isNumber(str(clave))): # True se paso como parametro el dni
+            comando = "DELETE FROM " + str(tabla) + " WHERE DNI='" + str(clave) + "'"
+        else: # sino es el nombre del paciente
+            comando = "DELETE FROM " + str(tabla) + " WHERE NOMBRE='" + str(clave) + "'"
+        
+        print(comando)
+        self.cursor_bdd.execute(comando)
+        self.conexion_bdd.commit()
+
+    def isNumber(self, palabra):
+        """ Verifica si el string argumento es un numero (dni) o un string.
+            Devuelve True si todo el string es un numero. """
+        return any(map(str.isdigit, palabra)) # aplica la funcion isdigit a cada digito del string palabra
+
+    def leer_datos(self, tabla, clave):
+        """ Obtiene de la base de datos los datos guardados del usuario especificado
+            por su nombre o DNI. 
+            Retorna los datos obtenidos. """
+        if(self.isNumber(str(clave))): # True se paso como parametro el dni
+            comando = "SELECT * FROM " + str(tabla) + " WHERE DNI='" + str(clave) + "'"
+        else: # sino es el nombre del paciente
+            comando = "SELECT * FROM " + str(tabla) + " WHERE NOMBRE='" + str(clave) + "'"
+        
+        print(comando)
+        self.cursor_bdd.execute(comando)
+        datos = self.cursor_bdd.fetchall()
+        print(datos)
+        return datos
 
 bdd = Base_Datos("C:/Users/alejandro/Desktop/Base_de_Datos")
+
+#datos = ["Alejandro Ferrero", 40054394, "20/04/1998", "22", "15523673", "Bargellini 527", "Centro", "Suardi, Sta Fe.", "no posee", "ibuprofeno", "covid-19", 0, 0]
+#bdd.insertar_datos(datos, "DATOS_PERSONALES")
+#ret = bdd.leer_datos("DATOS_PERSONALES", "40054394")
+#print(ret)
+#bdd.actualizar_datos("DATOS_PERSONALES", "EDAD", "25", 40054394)
+#bdd.actualizar_datos("DATOS_PERSONALES", "BARRIO", "NVA CBA", 40054394)
+bdd.borrar_entrada("DATOS_PERSONALES", "Alejandro Ferrero")

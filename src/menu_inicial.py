@@ -2,6 +2,8 @@ import tkinter as tk
 import sys
 from tkinter import messagebox
 import base_datos as bdd
+import historia_clinica as hc
+import calendario as cal
 
 class Menu:
     def __init__(self):
@@ -34,7 +36,7 @@ class Menu:
         #canvas_botones.create_image((0,100), image=img_fondo, anchor="sw")
 
         # Base de datos
-        base_datos = bdd.Base_Datos("Base_De_Datos")
+        self.base_datos = bdd.Base_Datos("Base_De_Datos")
         
         # Variables Control
         self.datos_personales = tk.IntVar()
@@ -104,4 +106,21 @@ class Menu:
     def buscar_registro(self):
         """ Carga la historia clinica, datos u odontograma del paciente 
             desde la base de datos, indicado por su dni o nombre. """
+        opt_datos = self.datos_personales.get()
+        opt_historia = self.historia_clinica.get()
+        opt_odonto = self.odontograma.get()
+
+        if(opt_datos == 0 and opt_historia == 0 and opt_odonto == 0):
+            messagebox.showwarning("Advertencia", "¡Debe seleccionar la opción a buscar!")
+        if(opt_datos == 1):
+            print('datos')
+            datos = hc.Datos_personales(self.base_datos)
+            input("hola:")
+        if(opt_historia == 1):
+            print('historia')
+            datos = hc.Historia_clinica(self.base_datos)
+        if(opt_odonto == 1):
+            print("ODONTOGRAMA PNG")
+        
+        
 

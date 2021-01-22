@@ -7,6 +7,8 @@ import paciente as pa
 
 #----------------------ficha odontologica---------------------------
 class Datos_personales:
+    img_flecha = ""
+
     def __init__(self, base_de_datos):
         self.base_datos = base_de_datos
         self.raiz = tk.Tk() 
@@ -26,7 +28,7 @@ class Datos_personales:
         self.frame.pack() #agrega el Frame al root, el tamaño al que se ajusta es al del frame
         
         #Imagenes
-        img_flecha = tk.PhotoImage(file="../imagenes/flecha.png", width=25, height=25)
+        Datos_personales.img_flecha = tk.PhotoImage(file="../imagenes/flecha.png", width=25, height=25)
 
         # Variables de control
         self.opt_embarazada = tk.IntVar()
@@ -53,8 +55,9 @@ class Datos_personales:
         lbl_fecha_nac.grid(row=3, column=0, sticky="w", padx=5, pady=5)
         ent_fecha = tk.Entry(self.frame, textvariable=paciente.fecha_nac)
         ent_fecha.grid(row=3, column=1, padx=5, pady=5)
-        btn_flecha = tk.Button(self.frame, image = img_flecha, cursor="hand2", command=lambda:self.abrir_calendario(self.fecha_nac))
-        btn_flecha.grid(row=3, column=2, padx=5, pady=5)
+        self.btn_flecha = tk.Button(self.frame, image = Datos_personales.img_flecha, cursor="hand2", command=lambda:self.abrir_calendario(paciente.fecha_nac))
+        #self.btn_flecha = tk.Button(self.frame, cursor="hand2", command=lambda:self.abrir_calendario(paciente.fecha_nac))
+        self.btn_flecha.grid(row=3, column=2, padx=5, pady=5)
 
         lbl_edad = tk.Label(self.frame, text="Edad:")
         lbl_edad.grid(row=4, column=0, sticky="w", padx=5, pady=5)
@@ -170,7 +173,8 @@ class Datos_personales:
 
 #---------------------historia clinica-----------------------------
 class Historia_clinica:
-    def __init__(self):
+    def __init__(self, base_de_datos):
+        self.base_datos = base_de_datos
         self.raiz = tk.Tk() 
         self.raiz.title("Historia clínica") #Cambiar el nombre de la ventana 
         self.ancho_ventana = 600
@@ -278,5 +282,5 @@ class Historia_clinica:
 
 
 
-ex = Datos_personales()
+#ex = Datos_personales(6)
 #ex = Historia_clinica()
