@@ -59,10 +59,10 @@ class Menu:
         img_lupa = tk.PhotoImage(file="../imagenes/lupa2.png")
         img_borrar = tk.PhotoImage(file="../imagenes/borrar.png", width=50, height=50)
         img_salir = tk.PhotoImage(file="../imagenes/exit.png")
-        #img_crear = tk.PhotoImage(file="../imagenes/crear.png", width=50, height=50)
+        img_crear = tk.PhotoImage(file="../imagenes/crear.png", width=50, height=50)
         # botones
         btn_lupa = tk.Button(canvas_fondo, image = img_lupa, cursor="hand2", command=self.buscar_registro)
-        #btn_crear = tk.Button(canvas_fondo, image = img_crear, cursor="hand2", width=50, height=50)
+        btn_crear = tk.Button(canvas_fondo, image = img_crear, cursor="hand2", width=50, height=50, command=self.crear_registro)
         btn_borrar = tk.Button(canvas_fondo, image = img_borrar, cursor="hand2", width=50, height=50, command=self.borrar_registro)
         btn_salir = tk.Button(canvas_fondo, image = img_salir, cursor="hand2", command=self.finalizar_programa)
         #checkbox
@@ -75,7 +75,7 @@ class Menu:
         canvas_fondo.create_text(60, alineacion_Y, text="Paciente", font=("waltograph", 30))
         cuadro_window = canvas_fondo.create_window(220, alineacion_Y, window=cuadro_nombre)
         lupa_window = canvas_fondo.create_window(350, alineacion_Y, window=btn_lupa)
-        #crear_window = canvas_fondo.create_window(411, alineacion_Y, window=btn_crear)
+        crear_window = canvas_fondo.create_window(411, alineacion_Y, window=btn_crear)
         borrar_window = canvas_fondo.create_window(470, alineacion_Y, window=btn_borrar)
         salir_window = canvas_fondo.create_window(460, 23, window=btn_salir)
         datos_window = canvas_fondo.create_window(100, 370, window=check_datos)
@@ -102,19 +102,23 @@ class Menu:
             msj = "¿Desea realmente borrar los datos personales de " + str(self.texto_busqueda.get()) + "?"
             ret = messagebox.askokcancel("Borrar registro de paciente", msj)
             print("BORRAR", ret)
-            self.base_datos.borrar_entrada("DATOS_PERSONALES", self.texto_busqueda.get())
+            if(ret):
+                self.base_datos.borrar_entrada("DATOS_PERSONALES", self.texto_busqueda.get())
 
         if(opt_historia == 1):
             msj = "¿Desea realmente borrar la historia clínica de " + str(self.texto_busqueda.get()) + "?"
             ret = messagebox.askokcancel("Borrar registro de paciente", msj)
             print("BORRAR", ret)
-            self.base_datos.borrar_entrada("HISTORIA_CLINICA", self.texto_busqueda.get())
+            if(ret):
+                self.base_datos.borrar_entrada("HISTORIA_CLINICA", self.texto_busqueda.get())
 
         if(opt_odonto == 1):
             msj = "¿Desea realmente borrar el odontograma de " + str(self.texto_busqueda.get()) + "?"
             ret = messagebox.askokcancel("Borrar registro de paciente", msj)
             print("BORRAR", ret)
-            #BORRAR ODONTOGRAMAAAAAAAAAAAAAAA
+            if(ret):
+                print("BORRAR ODONTOGRAMA")
+                #BORRAR ODONTOGRAMAAAAAAAAAAAAAAA
 
     def buscar_registro(self):
         """ Carga la historia clinica, datos u odontograma del paciente 
@@ -127,8 +131,29 @@ class Menu:
             messagebox.showwarning("Advertencia", "¡Debe seleccionar la opción a buscar!")
         if(opt_datos == 1):
             print('datos')
-            self.vent_datos_personales = hc.Datos_personales(self.base_datos, self.texto_busqueda.get())
-            #input("hola:")
+            self.vent_datos_personales = hc.Datos_personales(self.base_datos, self.texto_busqueda.get(), 'buscar')
+            self.vent_datos_personales.cargar_datos()
+            self.vent_datos_personales.play()
+        if(opt_historia == 1):
+            print('historia')
+            self.vent_hist_clinica = hc.Historia_clinica(self.base_datos)
+        if(opt_odonto == 1):
+            print("ODONTOGRAMA PNG")
+
+    def crear_registro(self):
+        """ Crea una nueva entrada vacía para un paciente nuevo. """
+        opt_datos = self.datos_personales.get()
+        opt_historia = self.historia_clinica.get()
+        opt_odonto = self.odontograma.get()
+
+        if(opt_datos == 0 and opt_historia == 0 and opt_odonto == 0):
+            messagebox.showwarning("Advertencia", "¡Debe seleccionar la opción a buscar!")
+        if(opt_datos == 1):
+            print('datos')
+            self.vent_datos_personales = hc.Datos_personales(self.base_datos, self.texto_busqueda.get(), 'crear')
+            self.vent_datos_personales.crear_paciente()
+            self.vent_datos_personales.cargar_datos()
+            self.vent_datos_personales.play()
         if(opt_historia == 1):
             print('historia')
             self.vent_hist_clinica = hc.Historia_clinica(self.base_datos)

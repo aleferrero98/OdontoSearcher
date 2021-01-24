@@ -44,7 +44,7 @@ class Base_Datos:
         self.conexion_bdd.commit() #confirmamos los cambios a realizar 
 
     def actualizar_datos(self, tabla, atributo, nuevo_valor, dni):
-        """ Actualiza los datos de una entrada en la tabla de la base de datos """
+        """ Actualiza los datos de una entrada en la tabla de la base de datos. """
         comando = "UPDATE " + str(tabla) + " SET " + str(atributo) + "='" + str(nuevo_valor) + "' WHERE DNI='" + str(dni) + "'"
         print(comando)
         self.cursor_bdd.execute(comando)
@@ -80,6 +80,9 @@ class Base_Datos:
         datos = self.cursor_bdd.fetchall()
         print(datos)
         return datos
+
+    def create_null(self):
+        """ Inserta nuevo registro con todos los campos por defecto. """
 
     def ejecutar(self, comando):
         """ Ejecuta el comando especificado en el argumento como un string. """

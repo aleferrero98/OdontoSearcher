@@ -10,7 +10,7 @@ import paciente as pa
 #----------------------ficha odontologica---------------------------
 class Datos_personales:
 
-    def __init__(self, base_de_datos, id):
+    def __init__(self, base_de_datos, id, accion):
         self.base_datos = base_de_datos
         self.id = id
         #self.raiz = tk.Tk() 
@@ -36,6 +36,8 @@ class Datos_personales:
         # Variables de control
         #self.opt_embarazada = tk.IntVar()
         #self.opt_fuma = tk.IntVar()
+
+        # Paciente
         self.paciente = pa.Paciente(self.id, self.base_datos)
         
         #TITULO
@@ -96,30 +98,30 @@ class Datos_personales:
         #segunda parte
         lbl_alergias = tk.Label(self.frame, text="Alergias:")
         lbl_alergias.grid(row=9, column=0, sticky="w", padx=5, pady=5)
-        txt_alergias = tk.Text(self.frame, width=20, height=5)
-        txt_alergias.grid(row=9, column=1, padx=5, pady=5)
-        scroll_alergias = tk.Scrollbar(self.frame, command=txt_alergias.yview, width=5)
+        self.txt_alergias = tk.Text(self.frame, width=20, height=5)
+        self.txt_alergias.grid(row=9, column=1, padx=5, pady=5)
+        scroll_alergias = tk.Scrollbar(self.frame, command=self.txt_alergias.yview, width=5)
         scroll_alergias.grid(row=9, column=2, sticky="nsew", padx=10, pady=10)
-        txt_alergias.config(yscrollcommand=scroll_alergias.set)
-        self.set_text(txt_alergias, self.paciente.alergias.get())
+        self.txt_alergias.config(yscrollcommand=scroll_alergias.set)
+        
 
         lbl_medicacion = tk.Label(self.frame, text="Medicación actual:")
         lbl_medicacion.grid(row=10, column=0, sticky="w", padx=5, pady=5)
-        txt_medicacion = tk.Text(self.frame, width=20, height=5)
-        txt_medicacion.grid(row=10, column=1, padx=5, pady=5)
-        scroll_medicacion = tk.Scrollbar(self.frame, command=txt_medicacion.yview)
+        self.txt_medicacion = tk.Text(self.frame, width=20, height=5)
+        self.txt_medicacion.grid(row=10, column=1, padx=5, pady=5)
+        scroll_medicacion = tk.Scrollbar(self.frame, command=self.txt_medicacion.yview)
         scroll_medicacion.grid(row=10, column=2, sticky="nsew", padx=10, pady=10)
-        txt_medicacion.config(yscrollcommand=scroll_medicacion.set)
-        self.set_text(txt_medicacion, self.paciente.medicacion.get())
+        self.txt_medicacion.config(yscrollcommand=scroll_medicacion.set)
+        
 
         lbl_enfermedades = tk.Label(self.frame, text="Enfermedades \nsistémicas relevantes:")
         lbl_enfermedades.grid(row=11, column=0, sticky="w", padx=5, pady=5)
-        txt_enfermedades = tk.Text(self.frame, width=20, height=5)
-        txt_enfermedades.grid(row=11, column=1, padx=5, pady=5)
-        scroll_enfermedades = tk.Scrollbar(self.frame, command=txt_enfermedades.yview)
+        self.txt_enfermedades = tk.Text(self.frame, width=20, height=5)
+        self.txt_enfermedades.grid(row=11, column=1, padx=5, pady=5)
+        scroll_enfermedades = tk.Scrollbar(self.frame, command=self.txt_enfermedades.yview)
         scroll_enfermedades.grid(row=11, column=2, sticky="nsew", padx=10, pady=10)
-        txt_enfermedades.config(yscrollcommand=scroll_enfermedades.set)
-        self.set_text(txt_enfermedades, self.paciente.enfermedades.get())
+        self.txt_enfermedades.config(yscrollcommand=scroll_enfermedades.set)
+        
         
         #tercera parte
         lbl_embarazo = tk.Label(self.frame, text="¿Embarazada?")
@@ -136,24 +138,44 @@ class Datos_personales:
         fuma_no = tk.Radiobutton(self.frame, text="No", variable=self.paciente.opt_fuma, value=2, command=lambda:self.paciente.set_fuma(False))
         fuma_no.grid(row=14, column=2, sticky="w", padx=5, pady=5)
 
-        btn_guardar = tk.Button(self.frame, text="Guardar", cursor="hand2", command=lambda:self.get_text_input(txt_enfermedades))
+        btn_guardar = tk.Button(self.frame, text="Guardar", cursor="hand2", command=self.guardar_datos)
         btn_guardar.grid(row=15, column=1, padx=5, pady=5)
         btn_cancelar = tk.Button(self.frame, text="Cancelar", cursor="hand2", command=self.cancelar)
         btn_cancelar.grid(row=15, column=2, padx=5, pady=5)
 
-        self.raiz.mainloop()
-        print("NOMBRE:", self.paciente.nombre.get())
-        print("DNI:", self.paciente.dni.get())
-        print("FECHA NACIMIENTO:", self.paciente.fecha_nac.get())
-        print("EDAD:", self.paciente.edad.get())
-        print("SEXO:", self.paciente.sexo.get())
-        print("TELEFONO:", self.paciente.telefono.get())
-        print("DOMICILIO:", self.paciente.domicilio.get())
-        print("BARRIO:", self.paciente.barrio.get())
-        print("CIUDAD:", self.paciente.ciudad.get())
-        print("EMBARAZADA:", self.paciente.embarazada)
-        print("FUMA:", self.paciente.fuma)
+        #self.play()
+        #self.cargar_datos()
+        #self.paciente.detectar_cambio()
+        #self.raiz.mainloop()
+        
+      #  print("NOMBRE:", self.paciente.nombre.get())
+      #  print("DNI:", self.paciente.dni.get())
+      #  print("FECHA NACIMIENTO:", self.paciente.fecha_nac.get())
+      #  print("EDAD:", self.paciente.edad.get())
+      #  print("SEXO:", self.paciente.sexo.get())
+      #  print("TELEFONO:", self.paciente.telefono.get())
+      #  print("DOMICILIO:", self.paciente.domicilio.get())
+      #  print("BARRIO:", self.paciente.barrio.get())
+      #  print("CIUDAD:", self.paciente.ciudad.get())
+      #  print("EMBARAZADA:", self.paciente.embarazada)
+      #  print("FUMA:", self.paciente.fuma)
 
+    def crear_paciente(self):
+        """ Crea una entrada en la base de datos para un nuevo paciente. """
+        datos = ['', self.id, '', '', '', '', '', '', '', '', '', '', -1, -1]
+        self.base_datos.insertar_datos(datos, "DATOS_PERSONALES")
+    
+    def play(self):
+        self.raiz.mainloop()
+
+    def cargar_datos(self):
+        """ Carga los datos desde la BDD a las variables de control. """
+        self.paciente.cargar_datos_paciente()
+        self.set_text(self.txt_alergias, self.paciente.alergias.get())
+        self.set_text(self.txt_medicacion, self.paciente.medicacion.get())
+        self.set_text(self.txt_enfermedades, self.paciente.enfermedades.get())
+        self.paciente.detectar_cambio()
+    
     def abrir_calendario(self, fecha):
         #calendario = cal.Calendario(fecha)
         cal.Calendario(fecha)
@@ -165,7 +187,7 @@ class Datos_personales:
     def get_text_input(self, text):
         """ Obtiene el texto almacenado en un cuadro de texto """
         result = text.get("1.0","end-1c") 
-        print(result)
+        #print(result)
         return result
 
     def set_text(self, text, contenido):
@@ -173,14 +195,26 @@ class Datos_personales:
         text.insert("1.0", contenido)
 
     def guardar_datos(self):
-        """guarda los datos en la BDD"""
+        """guarda los datos en la BDD, ACTUALIZA solo aquellos que fueron modificados."""
+        print('GUARDARRRR')
+        dict_atributos = self.paciente.var_modificadas
+        dni = self.paciente.dni.get()
+        for clave in dict_atributos:
+            if(dict_atributos[clave] != ''):
+                self.base_datos.actualizar_datos("DATOS_PERSONALES", clave, dict_atributos[clave], dni)
+        str_alergias = self.get_text_input(self.txt_alergias)
+        str_medicacion = self.get_text_input(self.txt_medicacion)
+        str_enfermedades = self.get_text_input(self.txt_enfermedades)
+        self.base_datos.actualizar_datos("DATOS_PERSONALES", 'ALERGIAS', str_alergias, dni)
+        self.base_datos.actualizar_datos("DATOS_PERSONALES", 'MEDICACION', str_medicacion, dni)
+        self.base_datos.actualizar_datos("DATOS_PERSONALES", 'ENFERMEDADES', str_enfermedades, dni)
+        self.raiz.destroy()
 
 
 #---------------------historia clinica-----------------------------
 class Historia_clinica:
     def __init__(self, base_de_datos):
         self.base_datos = base_de_datos
-        #self.raiz = tk.Tk() 
         self.raiz = tk.Toplevel() 
         self.raiz.title("Historia clínica") #Cambiar el nombre de la ventana 
         self.ancho_ventana = 600
