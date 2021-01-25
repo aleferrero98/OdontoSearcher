@@ -66,6 +66,15 @@ class Base_Datos:
             Devuelve True si todo el string es un numero. """
         return any(map(str.isdigit, palabra)) # aplica la funcion isdigit a cada digito del string palabra
 
+    def check_entrada(self, tabla, clave):
+        """ Chequea si existe una entrada en la tabla para tal cliente (indicado por el DNI o nombre). 
+            Retorna False si no existe entrada. """
+        ret = self.leer_datos(tabla, clave)
+        if(ret == []):
+            return False
+        else: 
+            return True
+    
     def leer_datos(self, tabla, clave):
         """ Obtiene de la base de datos los datos guardados del usuario especificado
             por su nombre o DNI. 

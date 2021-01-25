@@ -5,7 +5,7 @@ class Paciente:
     """ Clase Paciente que contiene todos los datos de un paciente. """
     def __init__(self, id, base_datos):
         self.nombre = tk.StringVar()
-        self.dni = tk.IntVar(value='') # el DNI es entero -> es primary key en la BDD
+        self.dni = tk.IntVar() # el DNI es entero -> es primary key en la BDD
         self.fecha_nac = tk.StringVar()
         self.edad = tk.StringVar()
         self.sexo = tk.StringVar()
@@ -16,10 +16,10 @@ class Paciente:
         self.alergias = tk.StringVar()
         self.medicacion = tk.StringVar()
         self.enfermedades = tk.StringVar()
-        self.opt_embarazada = tk.IntVar() # radiobutton (1-Si, 2-No)
-        self.opt_fuma = tk.IntVar() # radiobutton (1-Si, 2-No)
-        self.embarazada = False
-        self.fuma = False
+        self.opt_embarazada = tk.IntVar() # radiobutton (1-Si, 0-No)
+        self.opt_fuma = tk.IntVar() # radiobutton (1-Si, 0-No)
+        #self.embarazada = False
+        #self.fuma = False
         self.id = id # es el nombre o el dni del paciente
         self.base_datos = base_datos
         self.var_modificadas = {'NOMBRE': '', 'DNI': '',
@@ -29,9 +29,12 @@ class Paciente:
 
 
     def cargar_datos_paciente(self):
+        """ Carga los datos del paciente desde la BDD a las variables de control. 
+            Retorna False en caso de que no existan tales datos. """
         datos = self.base_datos.leer_datos("DATOS_PERSONALES", self.id)
+        if(datos == []):
+            return False
         datos = list(datos[0]) # transforma tupla en lista
-        print(datos)
         self.nombre.set(datos[0])
         self.dni.set(datos[1])
         self.fecha_nac.set(datos[2])
@@ -44,10 +47,11 @@ class Paciente:
         self.alergias.set(datos[9])
         self.medicacion.set(datos[10])
         self.enfermedades.set(datos[11])
-        self.opt_embarazada = datos[12]
-        self.opt_fuma = datos[13]
-        self.embarazada = True if(datos[12] == 1) else False
-        self.fuma = True if(datos[13] == 1) else False
+        self.opt_embarazada.set(datos[12])
+        self.opt_fuma.set(datos[13])
+        #self.embarazada = True if(datos[12] == 1) else False
+        #self.fuma = True if(datos[13] == 1) else False
+        return True
 
     def detectar_cambio(self):
         """ Detecta si algun StringVar o IntVar cambió de valor para marcarlo como 'modificado'. """
@@ -67,8 +71,8 @@ class Paciente:
         #self.medicacion.trace_add('write', self.set_medicacion) 
         #self.enfermedades.trace_add('write', self.set_enfermedades) 
         
-        #self.embarazada.trace_add('write', self.set_embarazada) 
-        #self.fuma.trace_add('write', self.set_fuma) 
+        self.opt_embarazada.trace_add('write', self.set_opt_embarazada) 
+        self.opt_fuma.trace_add('write', self.set_opt_fuma) 
 
     def set_nombre(self, *args):
         self.var_modificadas['NOMBRE'] = self.nombre.get()
@@ -97,15 +101,15 @@ class Paciente:
     def set_ciudad(self, *args):
         self.var_modificadas['CIUDAD'] = self.ciudad.get()
 
-    #def set_embarazada(self, *args):
-    #    self.var_modificadas['EMBARAZADA'] = self.embarazada.get()
+    def set_opt_embarazada(self, *args):
+        self.var_modificadas['EMBARAZADA'] = self.opt_embarazada.get()
 
- #   def set_fuma(self, *args):
-#        self.var_modificadas['FUMA'] = self.fuma.get()
+    def set_opt_fuma(self, *args):
+        self.var_modificadas['FUMA'] = self.opt_fuma.get()
 
-    def set_embarazada(self, valor):
-        self.embarazada = valor
+  #  def set_embarazada(self, valor):
+  #      self.embarazada = valor
 
-    def set_fuma(self, valor):
-        self.fuma = valor
+ #   def set_fuma(self, valor):
+#        self.fuma = valor
 

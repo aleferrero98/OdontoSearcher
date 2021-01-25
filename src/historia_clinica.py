@@ -10,18 +10,16 @@ import paciente as pa
 #----------------------ficha odontologica---------------------------
 class Datos_personales:
 
-    def __init__(self, base_de_datos, id, accion):
+    def __init__(self, base_de_datos, id):
         self.base_datos = base_de_datos
-        self.id = id
-        #self.raiz = tk.Tk() 
+        self.id = id # es el identificador o DNI
         self.raiz = tk.Toplevel() 
         self.raiz.title("Ficha Odontológica") #Cambiar el nombre de la ventana 
         ancho_ventana = 600
         alto_ventana = 650
         x_ventana = self.raiz.winfo_screenwidth() // 2 - ancho_ventana // 2
-        y_ventana = self.raiz.winfo_screenheight() // 2 - alto_ventana // 2
+        y_ventana = self.raiz.winfo_screenheight() // 2 - alto_ventana // 2 - 20 # + 20px arriba 
         posicion = str(ancho_ventana) + "x" + str(alto_ventana) + "+" + str(x_ventana) + "+" + str(y_ventana)
-        
         self.raiz.geometry(posicion) #Configurar tamaño 
         self.raiz.iconbitmap('../imagenes/diente.ico') #Cambiar el icono por defecto, debe ser .ico
         self.raiz.config(bg="white") #Cambiar color de fondo
@@ -32,10 +30,6 @@ class Datos_personales:
         
         #Imagenes
         self.img_flecha = tk.PhotoImage(file="../imagenes/flecha.png", width=25, height=25)
-
-        # Variables de control
-        #self.opt_embarazada = tk.IntVar()
-        #self.opt_fuma = tk.IntVar()
 
         # Paciente
         self.paciente = pa.Paciente(self.id, self.base_datos)
@@ -61,7 +55,6 @@ class Datos_personales:
         ent_fecha = tk.Entry(self.frame, textvariable=self.paciente.fecha_nac)
         ent_fecha.grid(row=3, column=1, padx=5, pady=5)
         self.btn_flecha = tk.Button(self.frame, image=self.img_flecha, cursor="hand2", command=lambda:self.abrir_calendario(self.paciente.fecha_nac))
-        #self.btn_flecha = tk.Button(self.frame, cursor="hand2", command=lambda:self.abrir_calendario(paciente.fecha_nac))
         self.btn_flecha.grid(row=3, column=2, padx=5, pady=5)
 
         lbl_edad = tk.Label(self.frame, text="Edad:")
@@ -104,7 +97,6 @@ class Datos_personales:
         scroll_alergias.grid(row=9, column=2, sticky="nsew", padx=10, pady=10)
         self.txt_alergias.config(yscrollcommand=scroll_alergias.set)
         
-
         lbl_medicacion = tk.Label(self.frame, text="Medicación actual:")
         lbl_medicacion.grid(row=10, column=0, sticky="w", padx=5, pady=5)
         self.txt_medicacion = tk.Text(self.frame, width=20, height=5)
@@ -113,7 +105,6 @@ class Datos_personales:
         scroll_medicacion.grid(row=10, column=2, sticky="nsew", padx=10, pady=10)
         self.txt_medicacion.config(yscrollcommand=scroll_medicacion.set)
         
-
         lbl_enfermedades = tk.Label(self.frame, text="Enfermedades \nsistémicas relevantes:")
         lbl_enfermedades.grid(row=11, column=0, sticky="w", padx=5, pady=5)
         self.txt_enfermedades = tk.Text(self.frame, width=20, height=5)
@@ -122,20 +113,19 @@ class Datos_personales:
         scroll_enfermedades.grid(row=11, column=2, sticky="nsew", padx=10, pady=10)
         self.txt_enfermedades.config(yscrollcommand=scroll_enfermedades.set)
         
-        
         #tercera parte
         lbl_embarazo = tk.Label(self.frame, text="¿Embarazada?")
         lbl_embarazo.grid(row=13, column=0, sticky="w", padx=5, pady=5)
-        embarazo_si = tk.Radiobutton(self.frame, text="Si", variable=self.paciente.opt_embarazada, value=1, command=lambda:self.paciente.set_embarazada(True))
+        embarazo_si = tk.Radiobutton(self.frame, text="Si", variable=self.paciente.opt_embarazada, value=1)#, command=self.paciente.set_embarazada(True))
         embarazo_si.grid(row=13, column=1, sticky="w", padx=5, pady=5)
-        embarazo_no = tk.Radiobutton(self.frame, text="No", variable=self.paciente.opt_embarazada, value=2, command=lambda:self.paciente.set_embarazada(False))
+        embarazo_no = tk.Radiobutton(self.frame, text="No", variable=self.paciente.opt_embarazada, value=0)#, command=self.paciente.set_embarazada(False))
         embarazo_no.grid(row=13, column=2, sticky="w", padx=5, pady=5)
 
         lbl_fuma = tk.Label(self.frame, text="¿Fuma?")
         lbl_fuma.grid(row=14, column=0, sticky="w", padx=5, pady=5)
-        fuma_si = tk.Radiobutton(self.frame, text="Si", variable=self.paciente.opt_fuma, value=1, command=lambda:self.paciente.set_fuma(True))
+        fuma_si = tk.Radiobutton(self.frame, text="Si", variable=self.paciente.opt_fuma, value=1)#, command=lambda:self.paciente.set_fuma(True))
         fuma_si.grid(row=14, column=1, sticky="w", padx=5, pady=5)
-        fuma_no = tk.Radiobutton(self.frame, text="No", variable=self.paciente.opt_fuma, value=2, command=lambda:self.paciente.set_fuma(False))
+        fuma_no = tk.Radiobutton(self.frame, text="No", variable=self.paciente.opt_fuma, value=0)#, command=lambda:self.paciente.set_fuma(False))
         fuma_no.grid(row=14, column=2, sticky="w", padx=5, pady=5)
 
         btn_guardar = tk.Button(self.frame, text="Guardar", cursor="hand2", command=self.guardar_datos)
@@ -143,41 +133,28 @@ class Datos_personales:
         btn_cancelar = tk.Button(self.frame, text="Cancelar", cursor="hand2", command=self.cancelar)
         btn_cancelar.grid(row=15, column=2, padx=5, pady=5)
 
-        #self.play()
-        #self.cargar_datos()
-        #self.paciente.detectar_cambio()
-        #self.raiz.mainloop()
-        
-      #  print("NOMBRE:", self.paciente.nombre.get())
-      #  print("DNI:", self.paciente.dni.get())
-      #  print("FECHA NACIMIENTO:", self.paciente.fecha_nac.get())
-      #  print("EDAD:", self.paciente.edad.get())
-      #  print("SEXO:", self.paciente.sexo.get())
-      #  print("TELEFONO:", self.paciente.telefono.get())
-      #  print("DOMICILIO:", self.paciente.domicilio.get())
-      #  print("BARRIO:", self.paciente.barrio.get())
-      #  print("CIUDAD:", self.paciente.ciudad.get())
-      #  print("EMBARAZADA:", self.paciente.embarazada)
-      #  print("FUMA:", self.paciente.fuma)
-
     def crear_paciente(self):
-        """ Crea una entrada en la base de datos para un nuevo paciente. """
+        """ Crea una entrada en la base de datos para un nuevo paciente, con campos nulos por defecto. """
         datos = ['', self.id, '', '', '', '', '', '', '', '', '', '', -1, -1]
         self.base_datos.insertar_datos(datos, "DATOS_PERSONALES")
     
     def play(self):
-        self.raiz.mainloop()
+        """ Muestra la ventana. """
+        #self.raiz.mainloop()
 
     def cargar_datos(self):
-        """ Carga los datos desde la BDD a las variables de control. """
-        self.paciente.cargar_datos_paciente()
+        """ Carga los datos desde la BDD a las variables de control.
+            En caso de error (paciente inexistente) devuelve False. """
+        ret = self.paciente.cargar_datos_paciente()
+        if(ret == False): # si el valor de retorno es falso entonces creo el paciente antes de cargar los datos
+            return False
         self.set_text(self.txt_alergias, self.paciente.alergias.get())
         self.set_text(self.txt_medicacion, self.paciente.medicacion.get())
         self.set_text(self.txt_enfermedades, self.paciente.enfermedades.get())
         self.paciente.detectar_cambio()
+        return True
     
     def abrir_calendario(self, fecha):
-        #calendario = cal.Calendario(fecha)
         cal.Calendario(fecha)
 
     def cancelar(self):
@@ -187,7 +164,6 @@ class Datos_personales:
     def get_text_input(self, text):
         """ Obtiene el texto almacenado en un cuadro de texto """
         result = text.get("1.0","end-1c") 
-        #print(result)
         return result
 
     def set_text(self, text, contenido):
@@ -205,6 +181,7 @@ class Datos_personales:
         str_alergias = self.get_text_input(self.txt_alergias)
         str_medicacion = self.get_text_input(self.txt_medicacion)
         str_enfermedades = self.get_text_input(self.txt_enfermedades)
+        # los cuadros de texto se actualizan siempre porque no puedo saber cuando cambian
         self.base_datos.actualizar_datos("DATOS_PERSONALES", 'ALERGIAS', str_alergias, dni)
         self.base_datos.actualizar_datos("DATOS_PERSONALES", 'MEDICACION', str_medicacion, dni)
         self.base_datos.actualizar_datos("DATOS_PERSONALES", 'ENFERMEDADES', str_enfermedades, dni)

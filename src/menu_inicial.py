@@ -7,6 +7,7 @@ from tkinter import messagebox
 import base_datos as bdd
 import historia_clinica as hc
 import calendario as cal
+import time
 
 class Menu:
     def __init__(self):
@@ -131,9 +132,18 @@ class Menu:
             messagebox.showwarning("Advertencia", "¡Debe seleccionar la opción a buscar!")
         if(opt_datos == 1):
             print('datos')
-            self.vent_datos_personales = hc.Datos_personales(self.base_datos, self.texto_busqueda.get(), 'buscar')
-            self.vent_datos_personales.cargar_datos()
-            self.vent_datos_personales.play()
+            ret = self.base_datos.check_entrada("DATOS_PERSONALES", self.texto_busqueda.get())
+            if(ret == False): #si no se encuentran los datos, se pregunta para crearlos
+                msj = "Los datos asociados a " + self.texto_busqueda.get() \
+                    + " no se encuentran en la Base de datos. ¿Desea Crear una entrada para dicho paciente?"
+                valor = messagebox.askquestion("Crear registro paciente", msj)
+                if(valor == "yes"):
+                    self.vent_datos_personales = hc.Datos_personales(self.base_datos, self.texto_busqueda.get())
+                    self.vent_datos_personales.crear_paciente()
+                    self.vent_datos_personales.cargar_datos()
+            else:
+                self.vent_datos_personales = hc.Datos_personales(self.base_datos, self.texto_busqueda.get())
+                self.vent_datos_personales.cargar_datos()
         if(opt_historia == 1):
             print('historia')
             self.vent_hist_clinica = hc.Historia_clinica(self.base_datos)
@@ -150,10 +160,10 @@ class Menu:
             messagebox.showwarning("Advertencia", "¡Debe seleccionar la opción a buscar!")
         if(opt_datos == 1):
             print('datos')
-            self.vent_datos_personales = hc.Datos_personales(self.base_datos, self.texto_busqueda.get(), 'crear')
+            self.vent_datos_personales = hc.Datos_personales(self.base_datos, self.texto_busqueda.get())
             self.vent_datos_personales.crear_paciente()
             self.vent_datos_personales.cargar_datos()
-            self.vent_datos_personales.play()
+            #self.vent_datos_personales.play()
         if(opt_historia == 1):
             print('historia')
             self.vent_hist_clinica = hc.Historia_clinica(self.base_datos)
