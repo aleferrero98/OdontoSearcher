@@ -190,14 +190,15 @@ class Datos_personales:
 
 #---------------------historia clinica-----------------------------
 class Historia_clinica:
-    def __init__(self, base_de_datos):
+    def __init__(self, base_de_datos, dni):
         self.base_datos = base_de_datos
+        self.dni = dni # es el DNI (no el nombre)
         self.raiz = tk.Toplevel() 
-        self.raiz.title("Historia clínica") #Cambiar el nombre de la ventana 
+        self.raiz.title("Historia clínica") #Titulo de la ventana 
         self.ancho_ventana = 600
         self.alto_ventana = 500
         x_ventana = self.raiz.winfo_screenwidth() // 2 - self.ancho_ventana // 2
-        y_ventana = self.raiz.winfo_screenheight() // 2 - self.alto_ventana // 2
+        y_ventana = self.raiz.winfo_screenheight() // 2 - self.alto_ventana // 2 - 60 # 60px mas arriba
         posicion = str(self.ancho_ventana) + "x" + str(self.alto_ventana) + "+" + str(x_ventana) + "+" + str(y_ventana)
         
         self.raiz.geometry(posicion) #Configurar tamaño 
@@ -210,9 +211,9 @@ class Historia_clinica:
         
         # Imagenes
         self.img_flecha = tk.PhotoImage(file="../imagenes/flecha.png", width=25, height=25)
-        
-        # Variables de control
-        self.fecha = tk.StringVar()
+
+        # Historia clinica
+        self.historia = pa.Historia(self.dni, self.base_datos)
         
         #TITULO
         lbl_hist_clinica = tk.Label(self.frame, text="Historia Clínica")
@@ -229,13 +230,19 @@ class Historia_clinica:
         lbl_observaciones = tk.Label(self.tabla, text="Observaciones")
         lbl_observaciones.grid(row=1, column=3, sticky="w", padx=5, pady=5, columnspan=2)
 
+        # listas de los entry, combobox y text que corresponden a distintas fechas de la misma historia clinica
+        self.l_fechas = []
+        self.l_prestaciones = []
+        self.l_text = [] #lista con todos los Text, para setear y obtener el contenido
+        
         #1er entrada a tabla
         self.indice_fila = 2
-        self.crear_entrada()
+       #self.indice_registro = 0
+        #self.crear_entrada()
 
         frame_btn = tk.Frame(self.frame, width=self.ancho_ventana, height=20)
         frame_btn.grid(row=3)
-        btn_entrada = tk.Button(frame_btn, text="Nueva entrada", cursor="hand2", command=self.crear_entrada)
+        btn_entrada = tk.Button(frame_btn, text="Nueva entrada", cursor="hand2", command=self.nueva_entrada)
        # btn_entrada.place(x=50, y=30)
         btn_entrada.grid(row=10, column=1, padx=5, pady=5)
         btn_guardar = tk.Button(frame_btn, text="Guardar", cursor="hand2")#, command=lambda:self.abrir_calendario(self.fecha))
@@ -243,16 +250,24 @@ class Historia_clinica:
         btn_cancelar = tk.Button(frame_btn, text="Cancelar", cursor="hand2", command=self.cancelar)
         btn_cancelar.grid(row=10, column=3, padx=5, pady=5)
 
-        self.raiz.mainloop()
+       # self.raiz.mainloop()
 
-    def crear_entrada(self):
+    def nueva_entrada(self):
+        """ Crea una nueva entrada (fecha, prestacion y observacion) con campos vacios. """
+        fecha = tk.StringVar()
+        prestacion = tk. StringVar()
+        self.historia.lista_fecha.append(fecha)
+        self.historia.lista_prestacion.append(prestacion)
+        self.crear_entrada(fecha, prestacion)
+
+    def crear_entrada(self, fecha, prestacion):
         """crea una nueva entrada en la tabla"""
         num_fila = self.indice_fila
-        ent_fecha = tk.Entry(self.tabla, textvariable=self.fecha)
+        ent_fecha = tk.Entry(self.tabla, textvariable=fecha)
         ent_fecha.grid(row=num_fila, column=0, padx=5, pady=5)
-        btn_flecha = tk.Button(self.tabla, image = self.img_flecha, cursor="hand2", command=lambda:self.abrir_calendario(self.fecha))
+        btn_flecha = tk.Button(self.tabla, image = self.img_flecha, cursor="hand2", command=lambda:self.abrir_calendario(fecha))
         btn_flecha.grid(row=num_fila, column=1, padx=5, pady=5)
-        comb_prestacion = ttk.Combobox(self.tabla, width=35, height=20)
+        comb_prestacion = ttk.Combobox(self.tabla, width=35, height=20, textvariable=prestacion)
         comb_prestacion.grid(row=num_fila, column=2, padx=5, pady=5)
         comb_prestacion["values"] = self.leer_archivo('prestaciones.txt')
         txt_observacion = tk.Text(self.tabla, width=20, height=5)
@@ -260,27 +275,58 @@ class Historia_clinica:
         scroll_observacion = tk.Scrollbar(self.tabla, command=txt_observacion.yview)
         scroll_observacion.grid(row=num_fila, column=4, sticky="nsew", padx=10, pady=10)
         txt_observacion.config(yscrollcommand=scroll_observacion.set)
+        #self.l_fechas.append(ent_fecha)
+        #self.l_prestaciones.append(comb_prestacion)
+        self.l_text.append(txt_observacion)
         self.indice_fila += 1
+        #self.indice_registro += 1
 
     def leer_archivo(self, path):
         """ Funcion que lee un txt linea por linea y devuelve una lista con lo leido. """
         archivo = open(path, 'r', encoding='utf-8')
         contenido = archivo.read()
-        #print(contenido)
         lista = contenido.split(sep='\n')
-        #print(lista)
         archivo.close()
         return lista
 
+    def cargar_datos(self):
+        """ Carga los datos desde la BDD a las variables de control.
+            En caso de error (paciente inexistente) devuelve False. """
+        result,cant_registros = self.historia.cargar_historia_clinica()
+        print(result, cant_registros)
+        if(result == False): 
+            return False
+        i = 0
+        while(i < cant_registros):
+            var_fecha = self.historia.lista_fecha[i]
+            var_prestacion = self.historia.lista_prestacion[i]
+            self.crear_entrada(var_fecha, var_prestacion)
+            self.set_text(self.l_text[i], self.historia.lista_observaciones[i])
+            i += 1
+        var_fecha = tk.StringVar()
+        var_prestacion = tk.StringVar()
+        self.historia.lista_fecha.append(var_fecha)
+        self.historia.lista_prestacion.append(var_prestacion)
+        self.crear_entrada(var_fecha, var_prestacion)
+        #self.set_text(self.l_observaciones, self.paciente.alergias.get())
+        #self.set_text(self.txt_medicacion, self.paciente.medicacion.get())
+
+        return True
+
     def abrir_calendario(self, fecha):
-        calendario = cal.Calendario(fecha)
+        cal.Calendario(fecha)
     
     def cancelar(self):
+        """ Cierra la ventana """
         self.raiz.destroy()
 
-    def get_text_input(self, texto):
-        result = texto.get("1.0","end-1c")
-        print(result)
+    def set_text(self, text, contenido):
+        """ Setea el texto a mostrar en un objeto Text. """
+        text.insert("1.0", contenido)
+
+    def get_text_input(self, text):
+        """ Obtiene el texto almacenado en un cuadro de texto """
+        result = text.get("1.0","end-1c") 
         return result
 
     def guardar_datos(self):

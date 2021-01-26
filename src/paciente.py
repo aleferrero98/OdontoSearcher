@@ -4,6 +4,7 @@ import base_datos as bdd
 class Paciente:
     """ Clase Paciente que contiene todos los datos de un paciente. """
     def __init__(self, id, base_datos):
+        # Datos personales
         self.nombre = tk.StringVar()
         self.dni = tk.IntVar() # el DNI es entero -> es primary key en la BDD
         self.fecha_nac = tk.StringVar()
@@ -27,6 +28,7 @@ class Paciente:
                                 'DOMICILIO': '', 'BARRIO': '', 'CIUDAD': '',
                                 'EMBARAZADA': '', 'FUMA': ''}
 
+        
 
     def cargar_datos_paciente(self):
         """ Carga los datos del paciente desde la BDD a las variables de control. 
@@ -107,9 +109,36 @@ class Paciente:
     def set_opt_fuma(self, *args):
         self.var_modificadas['FUMA'] = self.opt_fuma.get()
 
-  #  def set_embarazada(self, valor):
-  #      self.embarazada = valor
 
- #   def set_fuma(self, valor):
-#        self.fuma = valor
 
+class Historia:
+    """ Objeto Historia que contiene la historia clinica de un paciente, especificado por el DNI. """ 
+    def __init__(self, dni, base_datos):
+        self.dni = dni
+        self.base_datos = base_datos
+        # Historia Clinica
+        # listas que guardan las variables de control 
+        self.lista_fecha = []
+        self.lista_prestacion = []
+        self.lista_observaciones = []
+
+
+    def cargar_historia_clinica(self):
+        """ Carga la historia clinica de un paciente a las variables de control. 
+            Retorna False en caso de que no existan tales datos."""
+        historia = self.base_datos.leer_datos("HISTORIA_CLINICA", self.dni)
+        if(historia == []):
+            return False,-1
+        print(historia)
+        conta = 0
+        # me carga las listas de StringVar con lo de la BDD (y no mas)
+        for registro in historia:
+            self.lista_fecha.append(tk.StringVar(value=registro[0]))
+            self.lista_prestacion.append(tk.StringVar(value=registro[1]))
+            self.lista_observaciones.append(registro[2])
+            conta += 1
+        
+       # print(self.lista_fecha)
+       # print(self.lista_prestacion)
+       # print(self.lista_observaciones)
+        return True,conta

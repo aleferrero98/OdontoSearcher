@@ -96,13 +96,33 @@ class Base_Datos:
     def ejecutar(self, comando):
         """ Ejecuta el comando especificado en el argumento como un string. """
         self.cursor_bdd.execute(str(comando))
+    
+    def obtener_dni(self, nombre):
+        """ Obtiene el DNI del paciente a partir de su nombre. """
+        comando = "SELECT DNI FROM DATOS_PERSONALES WHERE NOMBRE='" + str(nombre) + "'"
+        self.cursor_bdd.execute(comando)
+        dni = self.cursor_bdd.fetchall()
+        print(dni)
+        return dni
 
 if(__name__ == '__main__'):
     bdd = Base_Datos("Base_De_Datos")
-    datos = ["Alejandro Ferrero", 40054394, "20/04/1998", "22", "Masculino", "15523673", "Bargellini 527", "Centro", "Suardi, Sta Fe.", "no posee", "ibuprofeno", "covid-19", 2, 2]
-    bdd.insertar_datos(datos, "DATOS_PERSONALES")
-    ret = bdd.leer_datos("DATOS_PERSONALES", "40054394")
-    print(ret)
+    #datos = ["Alejandro Ferrero", 40054394, "20/04/1998", "22", "Masculino", "15523673", "Bargellini 527", "Centro", "Suardi, Sta Fe.", "no posee", "ibuprofeno", "covid-19", 2, 2]
+    #bdd.insertar_datos(datos, "DATOS_PERSONALES")
+    #ret = bdd.leer_datos("DATOS_PERSONALES", "40054394")
+    #print(ret)
     #bdd.actualizar_datos("DATOS_PERSONALES", "EDAD", "25", 40054394)
     #bdd.actualizar_datos("DATOS_PERSONALES", "BARRIO", "NVA CBA", 40054394)
     #bdd.borrar_entrada("DATOS_PERSONALES", "Alejandro Ferrero")
+
+    #datos = ["15/07/2000", "TRATAMIENTO ENDODONTICO", "ninguna", 40054394]
+    #bdd.insertar_datos(datos, "HISTORIA_CLINICA")
+    #datos = ["06/03/2007", "EXAMEN CLÍNICO", "Algunas caries", 40054394]
+    #bdd.insertar_datos(datos, "HISTORIA_CLINICA")
+    #ret = bdd.leer_datos("HISTORIA_CLINICA", "40054394")
+    #print(ret)
+    #ret = bdd.obtener_dni("Alejandro Ferrero")
+    ret = bdd.obtener_dni("chocha")
+    print(ret)
+    print(type(ret[0][0]))
+

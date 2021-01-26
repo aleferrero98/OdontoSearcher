@@ -97,8 +97,12 @@ class Menu:
         opt_historia = self.historia_clinica.get()
         opt_odonto = self.odontograma.get()
 
+        if(self.texto_busqueda.get() == ''):
+            messagebox.showwarning("Advertencia", "Ingrese el DNI o nombre del paciente a eliminar")
+            return
         if(opt_datos == 0 and opt_historia == 0 and opt_odonto == 0):
             messagebox.showwarning("Advertencia", "¡Debe seleccionar la opción a eliminar!")
+            return
         if(opt_datos == 1):
             msj = "¿Desea realmente borrar los datos personales de " + str(self.texto_busqueda.get()) + "?"
             ret = messagebox.askokcancel("Borrar registro de paciente", msj)
@@ -128,8 +132,12 @@ class Menu:
         opt_historia = self.historia_clinica.get()
         opt_odonto = self.odontograma.get()
 
+        if(self.texto_busqueda.get() == ''):
+            messagebox.showwarning("Advertencia", "Ingrese el DNI o nombre del paciente a buscar")
+            return
         if(opt_datos == 0 and opt_historia == 0 and opt_odonto == 0):
             messagebox.showwarning("Advertencia", "¡Debe seleccionar la opción a buscar!")
+            return 
         if(opt_datos == 1):
             print('datos')
             ret = self.base_datos.check_entrada("DATOS_PERSONALES", self.texto_busqueda.get())
@@ -146,7 +154,21 @@ class Menu:
                 self.vent_datos_personales.cargar_datos()
         if(opt_historia == 1):
             print('historia')
-            self.vent_hist_clinica = hc.Historia_clinica(self.base_datos)
+            # 1ero busca el dni si es que se paso el nombre del paciente
+            ret = self.base_datos.isNumber(self.texto_busqueda.get())
+            if(ret): #es True si es un nro
+                dni = int(self.texto_busqueda.get()) 
+            else: #sino obtengo el dni a partir del nombre
+                nro_dni = self.base_datos.obtener_dni(self.texto_busqueda.get())
+                print(nro_dni)
+                if(nro_dni == []):
+                    messagebox.showwarning("Advertencia", 
+                                           "¡Debe especificar el DNI del paciente o crear un registro con los datos del mismo!")
+                    return
+                else:
+                    dni = nro_dni[0][0]
+            self.vent_hist_clinica = hc.Historia_clinica(self.base_datos, dni)
+            self.vent_hist_clinica.cargar_datos()
         if(opt_odonto == 1):
             print("ODONTOGRAMA PNG")
 
@@ -156,8 +178,12 @@ class Menu:
         opt_historia = self.historia_clinica.get()
         opt_odonto = self.odontograma.get()
 
+        if(self.texto_busqueda.get() == ''):
+            messagebox.showwarning("Advertencia", "Ingrese el DNI del paciente a crear")
+            return
         if(opt_datos == 0 and opt_historia == 0 and opt_odonto == 0):
             messagebox.showwarning("Advertencia", "¡Debe seleccionar la opción a buscar!")
+            return
         if(opt_datos == 1):
             print('datos')
             self.vent_datos_personales = hc.Datos_personales(self.base_datos, self.texto_busqueda.get())
